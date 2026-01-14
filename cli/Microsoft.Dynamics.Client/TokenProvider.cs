@@ -1,13 +1,13 @@
 ﻿using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
 
-namespace Partner.Center.Cli
+namespace Microsoft.Dynamics.Client
 {
-    internal class TokenProvider
+    public class TokenProvider
     {
-        static string tenantId = CliContext.TenantId;
-        static string clientId = CliContext.ClientId;
-        static string clientSecret = CliContext.ClientSecret;
+        public static string tenantId { get; set; } = "CliContext.TenantId";
+        public static string clientId { get; set; } = "CliContext.ClientId";
+        public static string clientSecret { get; set; } = "CliContext.ClientSecret";
 
         internal static async Task<AuthenticationResult> GetPartnerCenterClientToken()
         {

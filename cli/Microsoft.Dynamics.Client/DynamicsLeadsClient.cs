@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Partner.Center.Cli
+namespace Microsoft.Dynamics.Client
 {
     internal class DynamicsLeadsClient : DynamicsClientBase
     {

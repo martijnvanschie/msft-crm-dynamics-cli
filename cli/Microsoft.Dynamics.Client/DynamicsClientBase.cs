@@ -6,9 +6,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Partner.Center.Cli
+namespace Microsoft.Dynamics.Client
 {
-    internal abstract class DynamicsClientBase
+    public abstract class DynamicsClientBase
     {
         private const string _dynamicsUrl = "https://macaw.crm4.dynamics.com";
         protected readonly HttpClient _httpClient;

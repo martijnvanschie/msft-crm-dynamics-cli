@@ -1,16 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-namespace Partner.Center.Cli
+namespace Microsoft.Dynamics.Client
 {
-    internal class DynamicsOpportunitiesClient : DynamicsClientBase
+    public class DynamicsOpportunitiesClient : DynamicsClientBase
     {
-        internal DynamicsOpportunitiesClient() : base()
+        public DynamicsOpportunitiesClient() : base()
         {
         }
 
@@ -24,7 +16,7 @@ namespace Partner.Center.Cli
         /// var opportunity = await client.GetOpportunity("opportunity-guid-here");
         /// Console.WriteLine(opportunity);
         /// </example>
-        internal async Task<string> GetOpportunity(string opportunityId)
+        public async Task<string> GetOpportunity(string opportunityId)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities({opportunityId})");
@@ -38,7 +30,7 @@ namespace Partner.Center.Cli
         /// </summary>
         /// <param name="top">Maximum number of opportunities to return</param>
         /// <returns>Formatted JSON string with opportunities list</returns>
-        internal async Task<string> GetOpportunities(int top = 10)
+        public async Task<string> GetOpportunities(int top = 10)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities?$top={top}");
@@ -58,7 +50,7 @@ namespace Partner.Center.Cli
         /// var opportunities = await client.GetOpportunitiesWithFields(new[] { "name", "estimatedvalue", "actualvalue", "closeprobability" }, 10);
         /// Console.WriteLine(opportunities);
         /// </example>
-        internal async Task<string> GetOpportunitiesWithFields(string[] fields, int top = 10)
+        public async Task<string> GetOpportunitiesWithFields(string[] fields, int top = 10)
         {
             await InitializeAuthenticationAsync();
             var select = string.Join(",", fields);
@@ -79,7 +71,7 @@ namespace Partner.Center.Cli
         /// var filtered = await client.GetOpportunitiesByFilter("estimatedvalue gt 100000", 10);
         /// Console.WriteLine(filtered);
         /// </example>
-        internal async Task<string> GetOpportunitiesByFilter(string filter, int top = 10)
+        public async Task<string> GetOpportunitiesByFilter(string filter, int top = 10)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities?$filter={filter}&$top={top}");
@@ -99,7 +91,7 @@ namespace Partner.Center.Cli
         /// var opportunity = await client.GetOpportunityWithRelatedData("opportunity-guid-here", "customerid_account($select=name,accountnumber)");
         /// Console.WriteLine(opportunity);
         /// </example>
-        internal async Task<string> GetOpportunityWithRelatedData(string opportunityId, string expand)
+        public async Task<string> GetOpportunityWithRelatedData(string opportunityId, string expand)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities({opportunityId})?$expand={expand}");
@@ -118,7 +110,7 @@ namespace Partner.Center.Cli
         /// var accountOpportunities = await client.GetOpportunitiesByAccount("account-guid-here");
         /// Console.WriteLine(accountOpportunities);
         /// </example>
-        internal async Task<string> GetOpportunitiesByAccount(string accountId)
+        public async Task<string> GetOpportunitiesByAccount(string accountId)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"accounts({accountId})/opportunity_customer_accounts");
@@ -132,7 +124,7 @@ namespace Partner.Center.Cli
         /// </summary>
         /// <param name="contactId">The GUID of the contact</param>
         /// <returns>Formatted JSON string with opportunities for the contact</returns>
-        internal async Task<string> GetOpportunitiesByContact(string contactId)
+        public async Task<string> GetOpportunitiesByContact(string contactId)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"contacts({contactId})/opportunity_customer_contacts");
@@ -152,7 +144,7 @@ namespace Partner.Center.Cli
         /// var proposalOpportunities = await client.GetOpportunitiesBySalesStage(2, 10);
         /// Console.WriteLine(proposalOpportunities);
         /// </example>
-        internal async Task<string> GetOpportunitiesBySalesStage(int salesStageCode, int top = 10)
+        public async Task<string> GetOpportunitiesBySalesStage(int salesStageCode, int top = 10)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities?$filter=salesstage eq {salesStageCode}&$top={top}");
@@ -166,7 +158,7 @@ namespace Partner.Center.Cli
         /// </summary>
         /// <param name="top">Maximum number of opportunities to return</param>
         /// <returns>Formatted JSON string with open opportunities</returns>
-        internal async Task<string> GetOpenOpportunities(int top = 10)
+        public async Task<string> GetOpenOpportunities(int top = 10)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities?$filter=statecode eq 0&$top={top}");
@@ -180,7 +172,7 @@ namespace Partner.Center.Cli
         /// </summary>
         /// <param name="top">Maximum number of opportunities to return</param>
         /// <returns>Formatted JSON string with won opportunities</returns>
-        internal async Task<string> GetWonOpportunities(int top = 10)
+        public async Task<string> GetWonOpportunities(int top = 10)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities?$filter=statecode eq 1 and statuscode eq 3&$top={top}");

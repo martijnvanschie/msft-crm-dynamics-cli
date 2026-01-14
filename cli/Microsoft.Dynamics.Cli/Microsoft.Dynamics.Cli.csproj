@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.80.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Dynamics.Client\Microsoft.Dynamics.Client.csproj" />
+  </ItemGroup>
+
 </Project>
