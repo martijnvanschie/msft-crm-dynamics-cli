@@ -8,24 +8,10 @@ using System.Threading.Tasks;
 
 namespace Partner.Center.Cli
 {
-    internal class DynamicsAccountsClient
+    internal class DynamicsAccountsClient : DynamicsClientBase
     {
-        private const string DynamicsUrl = "https://macaw.crm4.dynamics.com";
-        private readonly HttpClient _httpClient;
-
-        internal DynamicsAccountsClient()
+        internal DynamicsAccountsClient() : base()
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri($"{DynamicsUrl}/api/data/v9.2/");
-        }
-
-        private async Task InitializeAuthenticationAsync()
-        {
-            var token = await TokenProvider.GetDynamicsUserToken();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-            _httpClient.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
-            _httpClient.DefaultRequestHeaders.Add("OData-Version", "4.0");
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         internal async Task<string> GetAccount(string accountId)
@@ -92,13 +78,5 @@ namespace Partner.Center.Cli
             return FormatJson(json);
         }
 
-        private static string FormatJson(string json)
-        {
-            var jsonDocument = JsonDocument.Parse(json);
-            return JsonSerializer.Serialize(jsonDocument, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            });
-        }
     }
 }
