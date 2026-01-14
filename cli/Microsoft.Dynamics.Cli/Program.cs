@@ -1,8 +1,5 @@
-﻿using Microsoft.Identity.Client;
-using Partner.Center.Cli;
-using System.Net.Http.Headers;
+﻿using Partner.Center.Cli;
 using Microsoft.Dynamics.Client;
-using static System.Net.WebRequestMethods;
 
 //// See https://aka.ms/new-console-template for more information
 //var pctoken = await TokenProvider.GetPartnerCenterClientToken();
