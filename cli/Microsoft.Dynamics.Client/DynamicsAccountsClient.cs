@@ -81,7 +81,11 @@ namespace Microsoft.Dynamics.Client
         public async Task<string> GetAccountsByNameContains(string searchString, int top = 10)
         {
             await InitializeAuthenticationAsync();
-            var response = await _httpClient.GetAsync($"accounts?$filter=contains(name,'{searchString}')&$top={top}");
+
+            string[] fields = new string[] {"name", "_ownerid_value" };
+            string select = string.Join(",", fields);
+
+            var response = await _httpClient.GetAsync($"accounts?$filter=contains(name,'{searchString}')&$top={top}&$select={select}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             return FormatJson(json);

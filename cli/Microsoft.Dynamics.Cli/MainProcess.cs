@@ -2,6 +2,8 @@
 using Microsoft.Dynamics.Core.Logging;
 using Microsoft.Extensions.Logging;
 using Partner.Center.Cli;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace Microsoft.Dynamics.Cli
 {
@@ -18,6 +20,46 @@ namespace Microsoft.Dynamics.Cli
         {
             _logger.LogInformation("Current process folder: {folder}", Environment.CurrentDirectory);
             _logger.LogInformation("Current thread id: {threadId}", Environment.ProcessId);
+
+            var app = new CommandApp();
+
+            app.Configure(config =>
+            {
+                config.SetApplicationName("mdcli");
+                config.SetApplicationVersion("1.0");
+
+#if DEBUG
+                config.PropagateExceptions();
+#endif
+
+                // Configure account commands
+                config.AddBranch("account", account =>
+                {
+                    account.AddCommand<Commands.Account.SearchAccountCommand>("search")
+                        .WithDescription("Search for accounts by name")
+                        .WithExample(new[] { "account", "search", "--name", "Contoso" })
+                        .WithExample(new[] { "account", "search", "-n", "Microsoft", "--top", "5" });
+                });
+
+                config.ValidateExamples();
+
+                config.SetExceptionHandler((ex, resolver) =>
+                {
+                    AnsiConsole.MarkupInterpolated($"[red]{ex.Message}[/]");
+                    return 1;
+                });
+
+            });
+
+            try
+            {
+                return await app.RunAsync(args);
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupInterpolated($"[red]{ex.Message}[/]");
+                return -1;
+            }
 
             //HttpClient _http = new HttpClient();
             //_http.BaseAddress = new Uri("https://api.partnercenter.microsoft.com/v1/");
@@ -53,10 +95,6 @@ namespace Microsoft.Dynamics.Cli
             DynamicsAccountsClient dynamicsAccountsClient = new DynamicsAccountsClient();
             var accounts = await dynamicsAccountsClient.GetAccountsByNameContains("Zeeman", 5);
             Console.WriteLine(accounts);
-
-            //DynamicsAccountsClient dynamicsClient = new DynamicsAccountsClient();
-            //var accounts = await dynamicsClient.GetAccounts();
-            //Console.WriteLine(accounts);
 
             return 0;
         }
