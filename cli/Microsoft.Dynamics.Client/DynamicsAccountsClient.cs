@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Dynamics.Client
 {
-    internal class DynamicsAccountsClient : DynamicsClientBase
+    public class DynamicsAccountsClient : DynamicsClientBase
     {
-        internal DynamicsAccountsClient() : base()
+        public DynamicsAccountsClient() : base()
         {
         }
 
-        internal async Task<string> GetAccount(string accountId)
+        public async Task<string> GetAccount(string accountId)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"accounts({accountId})");
@@ -23,7 +23,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        internal async Task<string> GetAccounts(int top = 10)
+        public async Task<string> GetAccounts(int top = 10)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"accounts?$top={top}");
@@ -32,7 +32,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        internal async Task<string> GetAccountsWithFields(string[] fields, int top = 10)
+        public async Task<string> GetAccountsWithFields(string[] fields, int top = 10)
         {
             await InitializeAuthenticationAsync();
             var select = string.Join(",", fields);
@@ -42,7 +42,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        internal async Task<string> GetAccountsByFilter(string filter, int top = 10)
+        public async Task<string> GetAccountsByFilter(string filter, int top = 10)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"accounts?$filter={filter}&$top={top}");
@@ -51,7 +51,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        internal async Task<string> GetAccountWithRelatedData(string accountId, string expand)
+        public async Task<string> GetAccountWithRelatedData(string accountId, string expand)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"accounts({accountId})?$expand={expand}");
@@ -60,7 +60,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        internal async Task<string> GetOpportunitiesForAccount(string accountId)
+        public async Task<string> GetOpportunitiesForAccount(string accountId)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"accounts({accountId})/opportunity_customer_accounts");
@@ -69,10 +69,19 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        internal async Task<string> GetOpportunity(string opportunityId)
+        public async Task<string> GetOpportunity(string opportunityId)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities({opportunityId})");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            return FormatJson(json);
+        }
+
+        public async Task<string> GetAccountsByNameContains(string searchString, int top = 10)
+        {
+            await InitializeAuthenticationAsync();
+            var response = await _httpClient.GetAsync($"accounts?$filter=contains(name,'{searchString}')&$top={top}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             return FormatJson(json);

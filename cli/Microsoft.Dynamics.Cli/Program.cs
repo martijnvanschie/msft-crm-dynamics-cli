@@ -1,42 +1,34 @@
-﻿using Partner.Center.Cli;
-using Microsoft.Dynamics.Client;
+﻿using Microsoft.Dynamics.Cli;
+using Microsoft.Dynamics.Core.Configuration;
+using Microsoft.Dynamics.Core.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
-//// See https://aka.ms/new-console-template for more information
-//var pctoken = await TokenProvider.GetPartnerCenterClientToken();
+var builder = Host.CreateApplicationBuilder(args);
 
-//HttpClient _http = new HttpClient();
-//_http.BaseAddress = new Uri("https://api.partnercenter.microsoft.com/v1/");
-//_http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", pctoken.AccessToken);
+builder.Logging.ClearProviders();
+builder.Services.AddSerilog((context, conf) => { conf.ReadFrom.Configuration(builder.Configuration); });
+builder.Services.AddSingleton<MainProcess>();
+//builder.Services.AddSingleton<CliProcess>();
+//builder.Services.AddSingleton<ITypeRegistrar, TypeRegistrar>();
+var host = builder.Build();
 
-//var response = await _http.GetAsync("customers");
-//try
-//{
-//	response.EnsureSuccessStatusCode();
-//}
-//catch (Exception ex)
-//{
-//	Console.WriteLine(ex);
-//}
-//var response2 = await response.Content.ReadAsStringAsync();
+// Register upstream dependencies
+var loggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
+LoggerManager.Initiate(loggerFactory);
 
-////// Dynamics 365 Sales API call
-//// Get opportunity by ID
-///
-TokenProvider.clientSecret = CliContext.ClientSecret;
-TokenProvider.clientId = CliContext.ClientId;
-TokenProvider.tenantId = CliContext.TenantId;
+var configuration = host.Services.GetRequiredService<IConfiguration>();
+ConfigManager.Initiate(configuration);
 
-string opportunityId = "e59cc412-8adc-483d-8d96-47f4bd0fe4cf"; // Replace with actual opportunity ID
+// Run the main process
+var serviceProvider = builder.Services.BuildServiceProvider();
+var process = serviceProvider.GetRequiredService<MainProcess>();
+//var process = serviceProvider.GetRequiredService<CliProcess>();
+var exitCode = await process.RunAsync(args);
 
-DynamicsOpportunitiesClient dynamicsOpportunitiesClient = new DynamicsOpportunitiesClient();
-var opportunities = await dynamicsOpportunitiesClient.GetOpportunitiesWithFields(new string[] { "name", "estimatedvalue", "statuscode" }, 5);
-Console.WriteLine(opportunities);
-
-var opportunityById = await dynamicsOpportunitiesClient.GetOpportunity(opportunityId);
-Console.WriteLine(opportunityById); 
-
-//DynamicsAccountsClient dynamicsClient = new DynamicsAccountsClient();
-//var accounts = await dynamicsClient.GetAccounts();
-//Console.WriteLine(accounts);
+Environment.Exit(exitCode);
 
 return 0;
