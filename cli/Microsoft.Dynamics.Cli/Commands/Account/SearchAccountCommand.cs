@@ -28,6 +28,11 @@ namespace Microsoft.Dynamics.Cli.Commands.Account
             [Description("Maximum number of results to return (default: 10)")]
             [DefaultValue(10)]
             public int Top { get; set; } = 10;
+
+            [CommandOption("-c|--contains")]
+            [Description("Use 'contains' search instead of 'starts with' (default is starts with)")]
+            [DefaultValue(false)]
+            public bool UseContains { get; set; } = false;
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
@@ -43,16 +48,18 @@ namespace Microsoft.Dynamics.Cli.Commands.Account
             TokenProvider.clientId = CliContext.ClientId;
             TokenProvider.tenantId = CliContext.TenantId;
 
+            string searchMode = settings.UseContains ? "containing" : "starting with";
+
             await AnsiConsole.Status()
                 .Spinner(Spinner.Known.Dots)
-                .StartAsync($"Searching for accounts containing '{settings.Name}'...", async ctx =>
+                .StartAsync($"Searching for accounts {searchMode} '{settings.Name}'...", async ctx =>
                 {
                     DynamicsAccountsClient dynamicsAccountsClient = new DynamicsAccountsClient();
-                    var accounts = await dynamicsAccountsClient.GetAccountsByNameContains(settings.Name, settings.Top);
+                    var accounts = await dynamicsAccountsClient.GetAccountsByName(settings.Name, settings.Top, !settings.UseContains);
                     
                     ctx.Status("Processing results...");
                     AnsiConsole.WriteLine();
-                    AnsiConsole.MarkupLine($"[green]Search results for '{settings.Name}':[/]");
+                    AnsiConsole.MarkupLine($"[green]Search results for accounts {searchMode} '{settings.Name}':[/]");
                     AnsiConsole.WriteLine(accounts);
                 });
 

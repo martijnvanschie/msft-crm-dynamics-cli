@@ -38,7 +38,8 @@ namespace Microsoft.Dynamics.Cli
                     account.AddCommand<Commands.Account.SearchAccountCommand>("search")
                         .WithDescription("Search for accounts by name")
                         .WithExample(new[] { "account", "search", "--name", "Contoso" })
-                        .WithExample(new[] { "account", "search", "-n", "Microsoft", "--top", "5" });
+                        .WithExample(new[] { "account", "search", "-n", "Microsoft", "--top", "5" })
+                        .WithExample(new[] { "account", "search", "-n", "Corp", "--contains" });
                 });
 
                 config.ValidateExamples();
@@ -93,7 +94,7 @@ namespace Microsoft.Dynamics.Cli
             Console.WriteLine(opportunityById);
 
             DynamicsAccountsClient dynamicsAccountsClient = new DynamicsAccountsClient();
-            var accounts = await dynamicsAccountsClient.GetAccountsByNameContains("Zeeman", 5);
+            var accounts = await dynamicsAccountsClient.GetAccountsByName("Zeeman", 5);
             Console.WriteLine(accounts);
 
             return 0;
