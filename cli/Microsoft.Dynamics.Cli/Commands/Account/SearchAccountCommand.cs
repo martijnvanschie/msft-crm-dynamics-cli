@@ -60,11 +60,29 @@ namespace Microsoft.Dynamics.Cli.Commands.Account
                     ctx.Status("Processing results...");
                     AnsiConsole.WriteLine();
                     AnsiConsole.MarkupLine($"[green]Search results for accounts {searchMode} '{settings.Name}':[/]");
-                    AnsiConsole.WriteLine(accounts);
+                    AnsiConsole.WriteLine();
+
+                    var table = new Table();
+                    table.Border(TableBorder.Rounded);
+                    table.AddColumn(new TableColumn("[yellow]Account Name[/]").LeftAligned());
+                    table.AddColumn(new TableColumn("[yellow]Owner[/]").LeftAligned());
+                    table.AddColumn(new TableColumn("[yellow]Account ID[/]").LeftAligned());
+
+                    foreach (var account in accounts.Value)
+                    {
+                        table.AddRow(
+                            account.Name ?? "[dim]N/A[/]",
+                            account.OwnerName ?? "[dim]N/A[/]",
+                            account.AccountId ?? "[dim]N/A[/]"
+                        );
+                    }
+
+                    AnsiConsole.Write(table);
+                    AnsiConsole.WriteLine();
+                    AnsiConsole.MarkupLine($"[dim]Total results: {accounts.Value.Count}[/]");
                 });
 
             return 0;
         }
     }
 }
-

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Dynamics.Client.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -78,7 +79,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        public async Task<string> GetAccountsByName(string searchString, int top = 10, bool useStartsWith = true)
+        public async Task<AccountSearchResultDTO> GetAccountsByName(string searchString, int top = 10, bool useStartsWith = true)
         {
             await InitializeAuthenticationAsync();
 
@@ -92,7 +93,8 @@ namespace Microsoft.Dynamics.Client
             var response = await _httpClient.GetAsync($"accounts?$filter={filter}&$top={top}&$select={select}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            return FormatJson(json);
+            return JsonSerializer.Deserialize<AccountSearchResultDTO>(json);
+            //return FormatJson(json);
         }
 
     }

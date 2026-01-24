@@ -93,9 +93,9 @@ namespace Microsoft.Dynamics.Cli
             var opportunityById = await dynamicsOpportunitiesClient.GetOpportunity(opportunityId);
             Console.WriteLine(opportunityById);
 
-            DynamicsAccountsClient dynamicsAccountsClient = new DynamicsAccountsClient();
-            var accounts = await dynamicsAccountsClient.GetAccountsByName("Zeeman", 5);
-            Console.WriteLine(accounts);
+            //DynamicsAccountsClient dynamicsAccountsClient = new DynamicsAccountsClient();
+            //var accounts = await dynamicsAccountsClient.GetAccountsByName("Zeeman", 5);
+            //Console.WriteLine(accounts);
 
             return 0;
         }
