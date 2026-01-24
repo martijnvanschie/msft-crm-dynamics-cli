@@ -9,6 +9,10 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.80.0" />
 		<PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.80.0" />
-	</ItemGroup>	
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Microsoft.Dynamics.Core\Microsoft.Dynamics.Core.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Microsoft.Dynamics.Cli": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

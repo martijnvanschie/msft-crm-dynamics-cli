@@ -1,3 +1,4 @@
+using Microsoft.Dynamics.Core.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,16 @@ namespace Microsoft.Dynamics.Client
 {
     public abstract class DynamicsClientBase
     {
-        private const string _dynamicsUrl = "https://macaw.crm4.dynamics.com";
         protected readonly HttpClient _httpClient;
 
         protected DynamicsClientBase()
         {
+            var config = ConfigManager.GetConfiguration();
+            var dynamicsUrl = config.Settings.DynamicsUrl
+                ?? throw new InvalidOperationException("DynamicsUrl is not configured in appsettings.json");
+
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri($"{_dynamicsUrl}/api/data/v9.2/");
+            _httpClient.BaseAddress = new Uri($"{dynamicsUrl}/api/data/v9.2/");
         }
 
         protected async Task InitializeAuthenticationAsync()

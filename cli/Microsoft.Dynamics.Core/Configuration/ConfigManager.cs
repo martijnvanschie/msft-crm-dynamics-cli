@@ -32,8 +32,6 @@ namespace Microsoft.Dynamics.Core.Configuration
 
     public class Settings
     {
-        public string? OutputPath { get; set; }
-        public string? UpdatesUrl { get; set; }
-        public string? ReleaseCommunicationsUrl { get; set; }
+        public string? DynamicsUrl { get; set; }
     }
 }

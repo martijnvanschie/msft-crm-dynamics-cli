@@ -9,6 +9,14 @@ using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);
 
+Console.WriteLine($"ASPNETCORE_ENVIRONMENT: {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
+Console.WriteLine($"DOTNET_ENVIRONMENT: {Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}");
+Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
+
+#if DEBUG
+builder.Environment.EnvironmentName = Environments.Development;
+#endif
+
 builder.Logging.ClearProviders();
 builder.Services.AddSerilog((context, conf) => { conf.ReadFrom.Configuration(builder.Configuration); });
 builder.Services.AddSingleton<MainProcess>();
