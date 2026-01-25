@@ -42,6 +42,15 @@ namespace Microsoft.Dynamics.Cli
                         .WithExample(new[] { "account", "search", "-n", "Corp", "--contains" });
                 });
 
+                // Configure opportunity commands
+                config.AddBranch("opportunity", opportunity =>
+                {
+                    opportunity.AddCommand<Commands.Opportunity.GetOpportunitiesByAccountCommand>("by-account")
+                        .WithDescription("Get all opportunities for a specific account")
+                        .WithExample(new[] { "opportunity", "by-account", "12345678-1234-1234-1234-123456789abc" })
+                        .WithExample(new[] { "opportunity", "by-account", "12345678-1234-1234-1234-123456789abc", "--json" });
+                });
+
                 config.ValidateExamples();
 
                 config.SetExceptionHandler((ex, resolver) =>
