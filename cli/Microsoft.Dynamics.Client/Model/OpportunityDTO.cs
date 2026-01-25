@@ -228,13 +228,4 @@ namespace Microsoft.Dynamics.Client.Model
         [JsonPropertyName("traversedpath")]
         public string? TraversedPath { get; set; }
     }
-
-    public class OpportunityResultDTO
-    {
-        [JsonPropertyName("@odata.context")]
-        public string? ODataContext { get; set; }
-
-        [JsonPropertyName("value")]
-        public List<OpportunityDTO> Value { get; set; } = [];
-    }
 }
