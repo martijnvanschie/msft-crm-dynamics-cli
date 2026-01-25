@@ -49,6 +49,12 @@ namespace Microsoft.Dynamics.Cli
                         .WithDescription("Get all opportunities for a specific account")
                         .WithExample(new[] { "opportunity", "by-account", "12345678-1234-1234-1234-123456789abc" })
                         .WithExample(new[] { "opportunity", "by-account", "12345678-1234-1234-1234-123456789abc", "--json" });
+
+                    opportunity.AddCommand<Commands.Opportunity.GetOpportunitiesByAccountNameCommand>("by-account-name")
+                        .WithDescription("Get opportunities for an account by searching by name")
+                        .WithExample(new[] { "opportunity", "by-account-name", "Contoso" })
+                        .WithExample(new[] { "opportunity", "by-account-name", "Microsoft", "--include-closed" })
+                        .WithExample(new[] { "opportunity", "by-account-name", "Corp", "--contains" });
                 });
 
                 config.ValidateExamples();
