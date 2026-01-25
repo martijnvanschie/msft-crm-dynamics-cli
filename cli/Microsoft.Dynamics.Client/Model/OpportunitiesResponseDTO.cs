@@ -2,7 +2,7 @@
 
 namespace Microsoft.Dynamics.Client.Model
 {
-    public class OpportunityResultDTO
+    public class OpportunitiesResponseDTO
     {
         [JsonPropertyName("@odata.context")]
         public string? ODataContext { get; set; }

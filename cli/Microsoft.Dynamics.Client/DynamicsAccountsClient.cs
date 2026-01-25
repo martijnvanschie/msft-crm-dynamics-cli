@@ -79,7 +79,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        public async Task<AccountSearchResultDTO> GetAccountsByName(string searchString, int top = 10, bool useStartsWith = true)
+        public async Task<AccountsResponseDTO> GetAccountsByName(string searchString, int top = 10, bool useStartsWith = true)
         {
             await InitializeAuthenticationAsync();
 
@@ -93,8 +93,7 @@ namespace Microsoft.Dynamics.Client
             var response = await _httpClient.GetAsync($"accounts?$filter={filter}&$top={top}&$select={select}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<AccountSearchResultDTO>(json);
-            //return FormatJson(json);
+            return JsonSerializer.Deserialize<AccountsResponseDTO>(json);
         }
 
     }

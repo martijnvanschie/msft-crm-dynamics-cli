@@ -113,13 +113,13 @@ namespace Microsoft.Dynamics.Client
         /// var accountOpportunities = await client.GetOpportunitiesByAccount("account-guid-here");
         /// Console.WriteLine(accountOpportunities);
         /// </example>
-        public async Task<OpportunityResultDTO> GetOpportunitiesByAccount(string accountId, int top = 20)
+        public async Task<OpportunitiesResponseDTO> GetOpportunitiesByAccount(string accountId, int top = 20)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"accounts({accountId})/opportunity_customer_accounts?$top={top}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<OpportunityResultDTO>(json);
+            return JsonSerializer.Deserialize<OpportunitiesResponseDTO>(json);
         }
 
         /// <summary>
