@@ -30,9 +30,8 @@ var builder = Host.CreateApplicationBuilder(new HostApplicationBuilderSettings {
 
 #if DEBUG
 builder.Environment.EnvironmentName = Environments.Development;
-#endif
-
 Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
+#endif
 
 builder.Logging.ClearProviders();
 builder.Services.AddSerilog((context, conf) => { conf.ReadFrom.Configuration(builder.Configuration); });

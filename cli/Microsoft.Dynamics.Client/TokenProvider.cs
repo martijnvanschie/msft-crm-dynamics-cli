@@ -1,10 +1,14 @@
-﻿using Microsoft.Identity.Client;
+﻿using Microsoft.Dynamics.Core.Logging;
+using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
 
 namespace Microsoft.Dynamics.Client
 {
     public class TokenProvider
     {
+        private static ILogger<TokenProvider> _logger = LoggerManager.GetLogger<TokenProvider>();
+
         public static string tenantId { get; set; } = "CliContext.TenantId";
         public static string clientId { get; set; } = "CliContext.ClientId";
         public static string clientSecret { get; set; } = "CliContext.ClientSecret";
@@ -42,14 +46,14 @@ namespace Microsoft.Dynamics.Client
                 var accounts = await app.GetAccountsAsync();
                 dynamicsResult = await app.AcquireTokenSilent(dynamicsScopes, accounts.FirstOrDefault())
                     .ExecuteAsync();
-                Console.WriteLine("Token acquired silently from cache");
+                _logger.LogInformation("Token acquired silently from cache");
             }
             catch (MsalUiRequiredException)
             {
                 // Cache miss or token expired, need interactive authentication
                 dynamicsResult = await app.AcquireTokenInteractive(dynamicsScopes)
                     .ExecuteAsync();
-                Console.WriteLine("Token acquired interactively");
+                _logger.LogInformation("Token acquired interactively");
             }
 
 
@@ -74,7 +78,7 @@ namespace Microsoft.Dynamics.Client
             string[] dynamicsScopes = { $"{dynamicsUrl}/.default" };
             var dynamicsResult = await app.AcquireTokenForClient(dynamicsScopes).ExecuteAsync();
 
-            Console.WriteLine("Dynamics Token acquired");
+            _logger.LogInformation("Dynamics Token acquired");
             return dynamicsResult;
         }
 
@@ -99,14 +103,14 @@ namespace Microsoft.Dynamics.Client
                 var accounts = await app.GetAccountsAsync();
                 dynamicsResult = await app.AcquireTokenSilent(dynamicsScopes, accounts.FirstOrDefault())
                     .ExecuteAsync();
-                Console.WriteLine("Token acquired silently from cache");
+                _logger.LogInformation("Token acquired silently from cache");
             }
             catch (MsalUiRequiredException)
             {
                 // Cache miss or token expired, need interactive authentication
                 dynamicsResult = await app.AcquireTokenInteractive(dynamicsScopes)
                     .ExecuteAsync();
-                Console.WriteLine("Token acquired interactively");
+                _logger.LogInformation("Token acquired interactively");
             }
 
 
@@ -142,7 +146,7 @@ namespace Microsoft.Dynamics.Client
             foreach (var account in accounts)
             {
                 await app.RemoveAsync(account);
-                Console.WriteLine($"Removed account: {account.Username}");
+                _logger.LogInformation($"Removed account: {account.Username}");
             }
 
             // Optionally delete the cache file completely
@@ -154,10 +158,10 @@ namespace Microsoft.Dynamics.Client
             if (File.Exists(cacheFilePath))
             {
                 File.Delete(cacheFilePath);
-                Console.WriteLine("Cache file deleted");
+                _logger.LogInformation("Cache file deleted");
             }
 
-            Console.WriteLine("Token cache invalidated successfully");
+            _logger.LogInformation("Token cache invalidated successfully");
         }
     }
 }
