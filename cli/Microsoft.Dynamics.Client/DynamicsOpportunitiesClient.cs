@@ -116,7 +116,7 @@ namespace Microsoft.Dynamics.Client
         public async Task<OpportunitiesResponseDTO> GetOpportunitiesByAccount(string accountId, int top = 20)
         {
             await InitializeAuthenticationAsync();
-            var response = await _httpClient.GetAsync($"accounts({accountId})/opportunity_customer_accounts?$top={top}");
+            var response = await _httpClient.GetAsync($"accounts({accountId})/opportunity_customer_accounts?$top={top}&$orderby=estimatedclosedate desc");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<OpportunitiesResponseDTO>(json);

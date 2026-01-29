@@ -85,8 +85,8 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                                 table.AddRow(
                                     Markup.Escape(opportunity.OpportunityId ?? "N/A"),
                                     Markup.Escape(opportunity.Name ?? "N/A"),
-                                    Markup.Escape(opportunity.State ?? "N/A"),
-                                    Markup.Escape(opportunity.Status ?? "N/A")
+                                    Markup.Escape(opportunity.StateCodeFormattedValue ?? "N/A"),
+                                    Markup.Escape(opportunity.StatusCodeFormattedValue ?? "N/A")
                                 );
                             }
                             

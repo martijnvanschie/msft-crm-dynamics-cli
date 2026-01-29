@@ -61,13 +61,13 @@ namespace Microsoft.Dynamics.Client.Model
         public string? ModifiedOn { get; set; }
 
         [JsonPropertyName("statecode@OData.Community.Display.V1.FormattedValue")]
-        public string? State { get; set; }
+        public string? StateCodeFormattedValue { get; set; }
 
         [JsonPropertyName("statecode")]
         public int? StateCode { get; set; }
 
         [JsonPropertyName("statuscode@OData.Community.Display.V1.FormattedValue")]
-        public string? Status { get; set; }
+        public string? StatusCodeFormattedValue { get; set; }
 
         [JsonPropertyName("statuscode")]
         public int? StatusCode { get; set; }
@@ -80,6 +80,9 @@ namespace Microsoft.Dynamics.Client.Model
 
         [JsonPropertyName("_parentcontactid_value")]
         public string? ParentContactId { get; set; }
+
+        [JsonPropertyName("_ownerid_value@OData.Community.Display.V1.FormattedValue")]
+        public string? OwnerFormattedValue { get; set; }
 
         [JsonPropertyName("_ownerid_value")]
         public string? OwnerId { get; set; }
@@ -125,6 +128,9 @@ namespace Microsoft.Dynamics.Client.Model
 
         [JsonPropertyName("mac_opportunitytype")]
         public int? OpportunityType { get; set; }
+
+        [JsonPropertyName("mac_probability@OData.Community.Display.V1.FormattedValue")]
+        public string ProbabilityFormattedValue { get; set; }
 
         [JsonPropertyName("mac_probability")]
         public int? Probability { get; set; }

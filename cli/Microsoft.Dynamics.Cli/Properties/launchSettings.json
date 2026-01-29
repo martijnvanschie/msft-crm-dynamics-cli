@@ -2,6 +2,7 @@
   "profiles": {
     "Microsoft.Dynamics.Cli": {
       "commandName": "Project",
+      "commandLineArgs": "account search --name Unica --top 1",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
