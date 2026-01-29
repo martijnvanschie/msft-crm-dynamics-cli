@@ -75,6 +75,9 @@ namespace Microsoft.Dynamics.Client.Model
         [JsonPropertyName("_customerid_value")]
         public string? CustomerId { get; set; }
 
+        [JsonPropertyName("_parentaccountid_value@OData.Community.Display.V1.FormattedValue")]
+        public string? ParentAccountIdFormattedValue { get; set; }
+
         [JsonPropertyName("_parentaccountid_value")]
         public string? ParentAccountId { get; set; }
 

@@ -200,5 +200,32 @@ namespace Microsoft.Dynamics.Client
             var json = await response.Content.ReadAsStringAsync();
             return FormatJson(json);
         }
+
+        /// <summary>
+        /// Search for opportunities by name
+        /// </summary>
+        /// <param name="searchString">The name or partial name to search for</param>
+        /// <param name="top">Maximum number of opportunities to return</param>
+        /// <param name="useStartsWith">If true, uses 'startswith' filter; otherwise uses 'contains' filter</param>
+        /// <returns>OpportunitiesResponseDTO containing the search results</returns>
+        /// <example>
+        /// // Search for opportunities starting with a name
+        /// var opportunities = await client.GetOpportunitiesByName("Microsoft", 10, true);
+        /// Console.WriteLine(opportunities);
+        /// </example>
+        public async Task<OpportunitiesResponseDTO> GetOpportunitiesByName(string searchString, int top = DEFAULT_TOP_VALUE, bool useStartsWith = true)
+        {
+            _logger.LogDebug("Getting opportunities by name with search string: {SearchString}, top value: {Top}, and useStartsWith: {UseStartsWith}", searchString, top, useStartsWith);
+            await InitializeAuthenticationAsync();
+
+            string filter = useStartsWith 
+                ? $"startswith(name,'{searchString}')" 
+                : $"contains(name,'{searchString}')";
+
+            var response = await _httpClient.GetAsync($"opportunities?$filter={filter}&$top={top}&$orderby=createdon desc");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<OpportunitiesResponseDTO>(json);
+        }
     }
 }
