@@ -1,0 +1,6 @@
+Make use of github instructions file
+
+https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions?tool=visualstudio
+
+https://docs.github.com/en/copilot/concepts/prompting/response-customization?tool=visualstudio
+

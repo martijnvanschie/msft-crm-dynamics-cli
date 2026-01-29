@@ -7,7 +7,7 @@ $singlefile = "true"
 
 # Publish the app
 dotnet publish `
-    .\cli\Microsoft.Dynamics.Cli\Microsoft.Dynamics.Cli.csproj `
+    .\Microsoft.Dynamics.Cli\Microsoft.Dynamics.Cli.csproj `
     -p:PublishSingleFile=$singlefile `
     --output $publishingfolder `
     --runtime win-x64 `
