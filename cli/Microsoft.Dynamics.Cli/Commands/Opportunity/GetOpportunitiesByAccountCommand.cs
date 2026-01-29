@@ -74,23 +74,7 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                             AnsiConsole.MarkupLine($"[green]{opportunityType} for account {settings.AccountId}:[/]");
                             AnsiConsole.WriteLine();
                             
-                            var table = new Table();
-                            table.AddColumn("[yellow]Opportunity ID[/]");
-                            table.AddColumn("[yellow]Name[/]");
-                            table.AddColumn("[yellow]State[/]");
-                            table.AddColumn("[yellow]Status[/]");
-
-                            foreach (var opportunity in opportunities)
-                            {
-                                table.AddRow(
-                                    Markup.Escape(opportunity.OpportunityId ?? "N/A"),
-                                    Markup.Escape(opportunity.Name ?? "N/A"),
-                                    Markup.Escape(opportunity.StateCodeFormattedValue ?? "N/A"),
-                                    Markup.Escape(opportunity.StatusCodeFormattedValue ?? "N/A")
-                                );
-                            }
-                            
-                            AnsiConsole.Write(table);
+                            OpportunityTableRenderer.RenderOpportunitiesTable(opportunities);
                         }
                     });
 
