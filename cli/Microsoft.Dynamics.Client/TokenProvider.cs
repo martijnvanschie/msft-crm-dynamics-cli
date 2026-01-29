@@ -84,6 +84,7 @@ namespace Microsoft.Dynamics.Client
 
         internal static async Task<AuthenticationResult> GetDynamicsUserToken()
         {
+            _logger.LogInformation("Acquiring Dynamics user token...");
             string dynamicsUrl = "https://macaw.crm4.dynamics.com";
             string[] dynamicsScopes = { $"{dynamicsUrl}/user_impersonation" };
 
@@ -132,6 +133,8 @@ namespace Microsoft.Dynamics.Client
 
         internal static async Task InvalidateCache()
         {
+            _logger.LogInformation("Invalidating token cache...");
+
             var app = PublicClientApplicationBuilder.Create(clientId)
                 .WithAuthority($"https://login.microsoftonline.com/{tenantId}")
                 .WithRedirectUri("http://localhost")
@@ -157,6 +160,7 @@ namespace Microsoft.Dynamics.Client
 
             if (File.Exists(cacheFilePath))
             {
+                _logger.LogInformation("Deleting cache file at: {CacheFilePath}", cacheFilePath);
                 File.Delete(cacheFilePath);
                 _logger.LogInformation("Cache file deleted");
             }

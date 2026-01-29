@@ -1,4 +1,6 @@
 using Microsoft.Dynamics.Client;
+using Microsoft.Dynamics.Core.Logging;
+using Microsoft.Extensions.Logging;
 using Partner.Center.Cli;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -9,6 +11,8 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
 {
     internal class GetOpportunitiesByAccountNameCommand : AsyncCommand<GetOpportunitiesByAccountNameCommand.Settings>
     {
+        protected readonly static ILogger<GetOpportunitiesByAccountNameCommand> _logger = LoggerManager.GetLogger<GetOpportunitiesByAccountNameCommand>();
+
         public GetOpportunitiesByAccountNameCommand()
         {
         }
@@ -66,12 +70,14 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
 
                         if (accountsResult.Value.Count == 0)
                         {
+                            _logger.LogInformation("No accounts found matching '{AccountName}'", settings.AccountName);
                             AnsiConsole.WriteLine();
                             AnsiConsole.MarkupLine($"[yellow]No accounts found matching '{settings.AccountName}'[/]");
                             return;
                         }
                         else if (accountsResult.Value.Count == 1)
                         {
+                            _logger.LogInformation("Single account found matching '{AccountName}'", settings.AccountName);
                             selectedAccountId = accountsResult.Value[0].AccountId;
                             selectedAccountName = accountsResult.Value[0].Name;
                             AnsiConsole.WriteLine();
@@ -79,6 +85,7 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                         }
                         else
                         {
+                            _logger.LogInformation("Multiple accounts found matching '{AccountName}'", settings.AccountName);
                             ctx.Status("Multiple accounts found...");
                             AnsiConsole.WriteLine();
                             AnsiConsole.MarkupLine($"[yellow]Multiple accounts found matching '{settings.AccountName}'[/]");
@@ -97,6 +104,7 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                             );
 
                             var selectedAccount = accountChoices.First(c => c.Display == selection).Account;
+                            _logger.LogInformation("Selected account '{AccountName}' with ID '{AccountId}'", selectedAccount.Name, selectedAccount.AccountId);
                             selectedAccountId = selectedAccount.AccountId;
                             selectedAccountName = selectedAccount.Name;
                             AnsiConsole.WriteLine();

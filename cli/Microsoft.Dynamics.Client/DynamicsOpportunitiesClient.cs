@@ -1,10 +1,14 @@
 using Microsoft.Dynamics.Client.Model;
+using Microsoft.Dynamics.Core.Logging;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace Microsoft.Dynamics.Client
 {
     public class DynamicsOpportunitiesClient : DynamicsClientBase
     {
+        protected readonly static ILogger<DynamicsOpportunitiesClient> _logger = LoggerManager.GetLogger<DynamicsOpportunitiesClient>();
+
         private const int DEFAULT_TOP_VALUE = 20;
 
         public DynamicsOpportunitiesClient() : base()
@@ -23,6 +27,7 @@ namespace Microsoft.Dynamics.Client
         /// </example>
         public async Task<string> GetOpportunity(string opportunityId)
         {
+            _logger.LogDebug("Getting opportunity with ID: {OpportunityId}", opportunityId);
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities({opportunityId})");
             response.EnsureSuccessStatusCode();
@@ -37,6 +42,7 @@ namespace Microsoft.Dynamics.Client
         /// <returns>Formatted JSON string with opportunities list</returns>
         public async Task<string> GetOpportunities(int top = DEFAULT_TOP_VALUE)
         {
+            _logger.LogDebug("Getting opportunities with top value: {Top}", top);
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities?$top={top}");
             response.EnsureSuccessStatusCode();
@@ -57,6 +63,7 @@ namespace Microsoft.Dynamics.Client
         /// </example>
         public async Task<string> GetOpportunitiesWithFields(string[] fields, int top = DEFAULT_TOP_VALUE)
         {
+            _logger.LogDebug("Getting opportunities with fields: {Fields} and top value: {Top}", string.Join(",", fields), top);
             await InitializeAuthenticationAsync();
             var select = string.Join(",", fields);
             var response = await _httpClient.GetAsync($"opportunities?$select={select}&$top={top}");
@@ -78,6 +85,7 @@ namespace Microsoft.Dynamics.Client
         /// </example>
         public async Task<string> GetOpportunitiesByFilter(string filter, int top = DEFAULT_TOP_VALUE)
         {
+            _logger.LogDebug("Getting opportunities with filter: {Filter} and top value: {Top}", filter, top);
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities?$filter={filter}&$top={top}");
             response.EnsureSuccessStatusCode();
@@ -98,6 +106,7 @@ namespace Microsoft.Dynamics.Client
         /// </example>
         public async Task<string> GetOpportunityWithRelatedData(string opportunityId, string expand)
         {
+            _logger.LogDebug("Getting opportunity with ID: {OpportunityId} and related data: {Expand}", opportunityId, expand);
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities({opportunityId})?$expand={expand}");
             response.EnsureSuccessStatusCode();
@@ -117,6 +126,7 @@ namespace Microsoft.Dynamics.Client
         /// </example>
         public async Task<OpportunitiesResponseDTO> GetOpportunitiesByAccount(string accountId, int top = DEFAULT_TOP_VALUE)
         {
+            _logger.LogDebug("Getting opportunities for account with ID: {AccountId} and top value: {Top}", accountId, top);
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"accounts({accountId})/opportunity_customer_accounts?$top={top}&$orderby=estimatedclosedate desc");
             response.EnsureSuccessStatusCode();
@@ -132,6 +142,7 @@ namespace Microsoft.Dynamics.Client
         /// <returns>Formatted JSON string with opportunities for the contact</returns>
         public async Task<string> GetOpportunitiesByContact(string contactId, int top = DEFAULT_TOP_VALUE)
         {
+            _logger.LogDebug("Getting opportunities for contact with ID: {ContactId} and top value: {Top}", contactId, top);
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"contacts({contactId})/opportunity_customer_contacts?$top={top}");
             response.EnsureSuccessStatusCode();
@@ -152,6 +163,7 @@ namespace Microsoft.Dynamics.Client
         /// </example>
         public async Task<string> GetOpportunitiesBySalesStage(int salesStageCode, int top = DEFAULT_TOP_VALUE)
         {
+            _logger.LogDebug("Getting opportunities with sales stage code: {SalesStageCode} and top value: {Top}", salesStageCode, top);
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities?$filter=salesstage eq {salesStageCode}&$top={top}");
             response.EnsureSuccessStatusCode();
@@ -166,6 +178,7 @@ namespace Microsoft.Dynamics.Client
         /// <returns>Formatted JSON string with open opportunities</returns>
         public async Task<string> GetOpenOpportunities(int top = DEFAULT_TOP_VALUE)
         {
+            _logger.LogDebug("Getting open opportunities with top value: {Top}", top);
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities?$filter=statecode eq 0&$top={top}");
             response.EnsureSuccessStatusCode();
@@ -180,6 +193,7 @@ namespace Microsoft.Dynamics.Client
         /// <returns>Formatted JSON string with won opportunities</returns>
         public async Task<string> GetWonOpportunities(int top = DEFAULT_TOP_VALUE)
         {
+            _logger.LogDebug("Getting won opportunities with top value: {Top}", top);
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"opportunities?$filter=statecode eq 1 and statuscode eq 3&$top={top}");
             response.EnsureSuccessStatusCode();
