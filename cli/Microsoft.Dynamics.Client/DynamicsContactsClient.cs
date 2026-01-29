@@ -10,6 +10,8 @@ namespace Microsoft.Dynamics.Client
 {
     internal class DynamicsContactsClient : DynamicsClientBase
     {
+        private const int DEFAULT_TOP_VALUE = 20;
+
         internal DynamicsContactsClient() : base()
         {
         }
@@ -33,7 +35,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        internal async Task<string> GetContacts(int top = 10)
+        internal async Task<string> GetContacts(int top = DEFAULT_TOP_VALUE)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"contacts?$top={top}");
@@ -53,7 +55,7 @@ namespace Microsoft.Dynamics.Client
         /// var contacts = await client.GetContactsWithFields(new[] { "fullname", "emailaddress1", "telephone1", "jobtitle" }, 10);
         /// Console.WriteLine(contacts);
         /// </example>
-        internal async Task<string> GetContactsWithFields(string[] fields, int top = 10)
+        internal async Task<string> GetContactsWithFields(string[] fields, int top = DEFAULT_TOP_VALUE)
         {
             await InitializeAuthenticationAsync();
             var select = string.Join(",", fields);
@@ -74,7 +76,7 @@ namespace Microsoft.Dynamics.Client
         /// var filtered = await client.GetContactsByFilter("contains(fullname,'Smith')", 10);
         /// Console.WriteLine(filtered);
         /// </example>
-        internal async Task<string> GetContactsByFilter(string filter, int top = 10)
+        internal async Task<string> GetContactsByFilter(string filter, int top = DEFAULT_TOP_VALUE)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"contacts?$filter={filter}&$top={top}");
@@ -92,19 +94,19 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        internal async Task<string> GetContactsByAccount(string accountId)
+        internal async Task<string> GetContactsByAccount(string accountId, int top = DEFAULT_TOP_VALUE)
         {
             await InitializeAuthenticationAsync();
-            var response = await _httpClient.GetAsync($"accounts({accountId})/contact_customer_accounts");
+            var response = await _httpClient.GetAsync($"accounts({accountId})/contact_customer_accounts?$top={top}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             return FormatJson(json);
         }
 
-        internal async Task<string> GetOpportunitiesForContact(string contactId)
+        internal async Task<string> GetOpportunitiesForContact(string contactId, int top = DEFAULT_TOP_VALUE)
         {
             await InitializeAuthenticationAsync();
-            var response = await _httpClient.GetAsync($"contacts({contactId})/opportunity_customer_contacts");
+            var response = await _httpClient.GetAsync($"contacts({contactId})/opportunity_customer_contacts?$top={top}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             return FormatJson(json);

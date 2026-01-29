@@ -11,6 +11,8 @@ namespace Microsoft.Dynamics.Client
 {
     public class DynamicsAccountsClient : DynamicsClientBase
     {
+        private const int DEFAULT_TOP_VALUE = 20;
+
         public DynamicsAccountsClient() : base()
         {
         }
@@ -24,7 +26,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        public async Task<string> GetAccounts(int top = 10)
+        public async Task<string> GetAccounts(int top = DEFAULT_TOP_VALUE)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"accounts?$top={top}");
@@ -33,7 +35,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        public async Task<string> GetAccountsWithFields(string[] fields, int top = 10)
+        public async Task<string> GetAccountsWithFields(string[] fields, int top = DEFAULT_TOP_VALUE)
         {
             await InitializeAuthenticationAsync();
             var select = string.Join(",", fields);
@@ -43,7 +45,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        public async Task<string> GetAccountsByFilter(string filter, int top = 10)
+        public async Task<string> GetAccountsByFilter(string filter, int top = DEFAULT_TOP_VALUE)
         {
             await InitializeAuthenticationAsync();
             var response = await _httpClient.GetAsync($"accounts?$filter={filter}&$top={top}");
@@ -61,10 +63,10 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        public async Task<string> GetOpportunitiesForAccount(string accountId)
+        public async Task<string> GetOpportunitiesForAccount(string accountId, int top = DEFAULT_TOP_VALUE)
         {
             await InitializeAuthenticationAsync();
-            var response = await _httpClient.GetAsync($"accounts({accountId})/opportunity_customer_accounts");
+            var response = await _httpClient.GetAsync($"accounts({accountId})/opportunity_customer_accounts?$top={top}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             return FormatJson(json);
@@ -79,7 +81,7 @@ namespace Microsoft.Dynamics.Client
             return FormatJson(json);
         }
 
-        public async Task<AccountsResponseDTO> GetAccountsByName(string searchString, int top = 10, bool useStartsWith = true)
+        public async Task<AccountsResponseDTO> GetAccountsByName(string searchString, int top = DEFAULT_TOP_VALUE, bool useStartsWith = true)
         {
             await InitializeAuthenticationAsync();
 
