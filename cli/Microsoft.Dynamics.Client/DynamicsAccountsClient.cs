@@ -91,14 +91,14 @@ namespace Microsoft.Dynamics.Client
             _logger.LogDebug("Getting accounts by name with search string: {SearchString}, top value: {Top}, and useStartsWith: {UseStartsWith}", searchString, top, useStartsWith);
             await InitializeAuthenticationAsync();
 
-            string[] fields = new string[] { "name", "_ownerid_value" };
+            string[] fields = ["name", "_ownerid_value", "territorycode", "_mac_relationshiptypeid_value"];
             string select = string.Join(",", fields);
 
             string filter = useStartsWith
                 ? $"startswith(name,'{searchString}')"
                 : $"contains(name,'{searchString}')";
 
-            var response = await _httpClient.GetAsync($"accounts?$filter={filter}&$top={top}&$select={select}");
+            var response = await _httpClient.GetAsync($"accounts?$filter={filter}&$top={top}"); // &$select={select}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<AccountsResponseDTO>(json);

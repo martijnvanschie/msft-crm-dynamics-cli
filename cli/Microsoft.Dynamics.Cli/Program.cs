@@ -15,18 +15,21 @@ if (args.Length > 0 && args[0] == "--debug")
     var realExePath = ExecutablePathResolver.GetRealExecutablePath();
     Console.WriteLine($"Executable directory: {realExePath}");
 
-    var executingAssemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
-    Console.WriteLine($"Executing Assembly: {executingAssemblyLocation}");
+    var baseDirectory = AppContext.BaseDirectory; ;
+    Console.WriteLine($"BaseDirectory: {baseDirectory}");
 
     Console.WriteLine($"DOTNET_ENVIRONMENT: {Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}");
 
     return 0;
 }
 
-//var builder = Host.CreateApplicationBuilder(args);
-
 var contentRootPath = Path.GetDirectoryName(ExecutablePathResolver.GetRealExecutablePath()) ?? Environment.CurrentDirectory;
-var builder = Host.CreateApplicationBuilder(new HostApplicationBuilderSettings { ContentRootPath = contentRootPath, Args = args });
+var builder = Host.CreateApplicationBuilder(
+    new HostApplicationBuilderSettings 
+    { 
+        ContentRootPath = contentRootPath, 
+        Args = args 
+    });
 
 #if DEBUG
 builder.Environment.EnvironmentName = Environments.Development;
@@ -36,8 +39,6 @@ Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
 builder.Logging.ClearProviders();
 builder.Services.AddSerilog((context, conf) => { conf.ReadFrom.Configuration(builder.Configuration); });
 builder.Services.AddSingleton<MainProcess>();
-//builder.Services.AddSingleton<CliProcess>();
-//builder.Services.AddSingleton<ITypeRegistrar, TypeRegistrar>();
 var host = builder.Build();
 
 // Register upstream dependencies
@@ -50,7 +51,6 @@ ConfigManager.Initiate(configuration);
 // Run the main process
 var serviceProvider = builder.Services.BuildServiceProvider();
 var process = serviceProvider.GetRequiredService<MainProcess>();
-//var process = serviceProvider.GetRequiredService<CliProcess>();
 var exitCode = await process.RunAsync(args);
 
 Environment.Exit(exitCode);

@@ -23,5 +23,17 @@ namespace Microsoft.Dynamics.Client.Model
 
         [JsonPropertyName("accountid")]
         public string? AccountId { get; set; }
+
+        [JsonPropertyName("territorycode@OData.Community.Display.V1.FormattedValue")]
+        public string? TerritoryCodeFormattedValue { get; set; }
+
+        [JsonPropertyName("territorycode")]
+        public int? TerritoryCode { get; set; }
+
+        [JsonPropertyName("_mac_relationshiptypeid_value@OData.Community.Display.V1.FormattedValue")]
+        public string? RelationshipTypeFormattedValue { get; set; }
+
+        [JsonPropertyName("_mac_relationshiptypeid_value")]
+        public Guid? RelationshipTypeId { get; set; }
     }
 }

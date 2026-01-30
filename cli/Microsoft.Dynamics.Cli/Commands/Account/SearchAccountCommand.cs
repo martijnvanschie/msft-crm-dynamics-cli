@@ -66,6 +66,8 @@ namespace Microsoft.Dynamics.Cli.Commands.Account
                     table.Border(TableBorder.Rounded);
                     table.AddColumn(new TableColumn("[yellow]Account Name[/]").LeftAligned());
                     table.AddColumn(new TableColumn("[yellow]Owner[/]").LeftAligned());
+                    table.AddColumn(new TableColumn("[yellow]Territory[/]").LeftAligned());
+                    table.AddColumn(new TableColumn("[yellow]Relationship Type[/]").LeftAligned());
                     table.AddColumn(new TableColumn("[yellow]Account ID[/]").LeftAligned());
 
                     foreach (var account in accounts.Value)
@@ -73,6 +75,8 @@ namespace Microsoft.Dynamics.Cli.Commands.Account
                         table.AddRow(
                             account.Name ?? "[dim]N/A[/]",
                             account.OwnerName ?? "[dim]N/A[/]",
+                            account.TerritoryCodeFormattedValue ?? "[dim]N/A[/]",
+                            account.RelationshipTypeFormattedValue ?? "[dim]N/A[/]",
                             account.AccountId ?? "[dim]N/A[/]"
                         );
                     }
