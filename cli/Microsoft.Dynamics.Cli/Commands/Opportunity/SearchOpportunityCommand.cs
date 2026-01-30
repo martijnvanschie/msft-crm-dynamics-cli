@@ -65,13 +65,15 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                     .StartAsync($"Searching for opportunities {searchMode} '{settings.Name}'...", async ctx =>
                     {
                         DynamicsOpportunitiesClient opportunitiesClient = new DynamicsOpportunitiesClient();
-                        var result = await opportunitiesClient.GetOpportunitiesByName(settings.Name, settings.Top, !settings.UseContains);
+                        var result = await opportunitiesClient.GetOpportunitiesByName(
+                            settings.Name, 
+                            settings.Top, 
+                            !settings.UseContains, 
+                            settings.IncludeClosed);
 
                         ctx.Status("Processing results...");
 
-                        var opportunities = settings.IncludeClosed
-                            ? result.Value.OrderBy(o => o.StateCode).ToList()
-                            : result.Value.Where(o => o.StateCode == 0).ToList();
+                        var opportunities = result.Value.OrderBy(o => o.StateCode).ThenByDescending(o => o.CreatedOn).ToList();
 
                         if (opportunities.Count == 0)
                         {

@@ -55,17 +55,19 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                     .StartAsync($"Retrieving opportunities for account {settings.AccountId}...", async ctx =>
                     {
                         DynamicsOpportunitiesClient client = new DynamicsOpportunitiesClient();
-                        var result = await client.GetOpportunitiesByAccount(settings.AccountId);
+                        var result = await client.GetOpportunitiesByAccount(settings.AccountId, 20, settings.IncludeClosed);
 
                         ctx.Status("Processing results...");
 
-                        var opportunities = settings.IncludeClosed 
-                            ? result.Value.OrderBy(o => o.StateCode).ToList()
-                            : result.Value.Where(o => o.StateCode == 0).ToList();
+                        var opportunities = result.Value.OrderBy(o => o.StateCode).ThenByDescending(o => o.EstimatedCloseDate).ToList();
 
                         if (settings.OutputJson)
                         {
-                            AnsiConsole.WriteLine(JsonSerializer.Serialize(opportunities));
+                            var jsonOptions = new JsonSerializerOptions
+                            {
+                                WriteIndented = true
+                            };
+                            AnsiConsole.WriteLine(JsonSerializer.Serialize(opportunities, jsonOptions));
                         }
                         else
                         {
