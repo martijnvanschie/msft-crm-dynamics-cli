@@ -54,8 +54,14 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                     .Spinner(Spinner.Known.Dots)
                     .StartAsync($"Retrieving opportunities for account {settings.AccountId}...", async ctx =>
                     {
-                        DynamicsOpportunitiesClient client = new DynamicsOpportunitiesClient();
-                        var result = await client.GetOpportunitiesByAccount(settings.AccountId, 20, settings.IncludeClosed);
+                        OpportunitiesClient client = new OpportunitiesClient();
+                        var result = await client.GetOpportunitiesByAccount(
+                            settings.AccountId, 
+                            new OpportunitiesRequestParameters 
+                            { 
+                                Top = 20, 
+                                IncludeClosed = settings.IncludeClosed 
+                            });
 
                         ctx.Status("Processing results...");
 

@@ -33,7 +33,11 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                     Markup.Escape(opportunity.AutoNumberOpportunity ?? "N/A"),
                     Markup.Escape(opportunity.ParentAccountIdFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.Name ?? "N/A"),
-                    Markup.Escape(DateTime.Parse(opportunity.CreatedOn).ToString("yyyy-MM-dd") ?? "N/A"),
+                    Markup.Escape(
+                        !string.IsNullOrEmpty(opportunity.CreatedOn)
+                            ? DateTime.Parse(opportunity.CreatedOn).ToString("yyyy-MM-dd")
+                            : "N/A"
+                    ),
                     Markup.Escape(opportunity.StateCodeFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.StatusCodeFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.ProbabilityFormattedValue ?? "N/A"),
@@ -73,7 +77,11 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                     //Markup.Escape(opportunity.AutoNumberOpportunity ?? "N/A"),
                     Markup.Escape(opportunity.ParentAccountIdFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.Name ?? "N/A"),
-                    Markup.Escape(DateTime.Parse(opportunity.CreatedOn).ToString("yyyy-MM-dd") ?? "N/A"),
+                    Markup.Escape(
+                        !string.IsNullOrEmpty(opportunity.CreatedOn)
+                            ? DateTime.Parse(opportunity.CreatedOn).ToString("yyyy-MM-dd")
+                            : "N/A"
+                    ),
                     Markup.Escape(opportunity.StateCodeFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.StatusCodeFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.ProbabilityFormattedValue ?? "N/A"),

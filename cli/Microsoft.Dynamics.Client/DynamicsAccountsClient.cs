@@ -1,19 +1,13 @@
 ﻿using Microsoft.Dynamics.Client.Model;
 using Microsoft.Dynamics.Core.Logging;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Microsoft.Dynamics.Client
 {
     public class DynamicsAccountsClient : DynamicsClientBase
     {
-        protected readonly static ILogger<DynamicsAccountsClient> _logger = LoggerManager.GetLogger<DynamicsAccountsClient>();
+        protected readonly static new ILogger<DynamicsAccountsClient> _logger = LoggerManager.GetLogger<DynamicsAccountsClient>();
 
         private const int DEFAULT_TOP_VALUE = 20;
 
@@ -97,17 +91,22 @@ namespace Microsoft.Dynamics.Client
             _logger.LogDebug("Getting accounts by name with search string: {SearchString}, top value: {Top}, and useStartsWith: {UseStartsWith}", searchString, top, useStartsWith);
             await InitializeAuthenticationAsync();
 
-            string[] fields = new string[] {"name", "_ownerid_value" };
+            string[] fields = new string[] { "name", "_ownerid_value" };
             string select = string.Join(",", fields);
 
-            string filter = useStartsWith 
-                ? $"startswith(name,'{searchString}')" 
+            string filter = useStartsWith
+                ? $"startswith(name,'{searchString}')"
                 : $"contains(name,'{searchString}')";
 
             var response = await _httpClient.GetAsync($"accounts?$filter={filter}&$top={top}&$select={select}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<AccountsResponseDTO>(json);
+            var result = JsonSerializer.Deserialize<AccountsResponseDTO>(json);
+            if (result == null)
+            {
+                throw new InvalidOperationException("Failed to deserialize AccountsResponseDTO from response JSON.");
+            }
+            return result;
         }
 
     }

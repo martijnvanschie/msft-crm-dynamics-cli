@@ -133,7 +133,7 @@ namespace Microsoft.Dynamics.Client.Model
         public int? OpportunityType { get; set; }
 
         [JsonPropertyName("mac_probability@OData.Community.Display.V1.FormattedValue")]
-        public string ProbabilityFormattedValue { get; set; }
+        public string? ProbabilityFormattedValue { get; set; }
 
         [JsonPropertyName("mac_probability")]
         public int? Probability { get; set; }

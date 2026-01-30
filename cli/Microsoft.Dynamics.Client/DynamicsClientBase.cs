@@ -13,7 +13,7 @@ namespace Microsoft.Dynamics.Client
 {
     public abstract class DynamicsClientBase
     {
-        protected readonly static ILogger<DynamicsClientBase> _logger = LoggerManager.GetLogger<DynamicsClientBase>();
+        protected private readonly static ILogger<DynamicsClientBase> _logger = LoggerManager.GetLogger<DynamicsClientBase>();
 
         private static readonly Lazy<HttpClient> _lazyHttpClient = new Lazy<HttpClient>(() =>
         {

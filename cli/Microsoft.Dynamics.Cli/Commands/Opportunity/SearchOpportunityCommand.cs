@@ -64,12 +64,15 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                     .Spinner(Spinner.Known.Dots)
                     .StartAsync($"Searching for opportunities {searchMode} '{settings.Name}'...", async ctx =>
                     {
-                        DynamicsOpportunitiesClient opportunitiesClient = new DynamicsOpportunitiesClient();
+                        OpportunitiesClient opportunitiesClient = new OpportunitiesClient();
                         var result = await opportunitiesClient.GetOpportunitiesByName(
-                            settings.Name, 
-                            settings.Top, 
-                            !settings.UseContains, 
-                            settings.IncludeClosed);
+                            settings.Name,
+                            new OpportunitiesRequestParameters()
+                            {
+                                Top = settings.Top,
+                                UseStartsWith = !settings.UseContains,
+                                IncludeClosed = settings.IncludeClosed
+                            });
 
                         ctx.Status("Processing results...");
 

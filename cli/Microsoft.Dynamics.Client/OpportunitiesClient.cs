@@ -5,13 +5,13 @@ using System.Text.Json;
 
 namespace Microsoft.Dynamics.Client
 {
-    public class DynamicsOpportunitiesClient : DynamicsClientBase
+    public class OpportunitiesClient : DynamicsClientBase
     {
-        protected readonly static ILogger<DynamicsOpportunitiesClient> _logger = LoggerManager.GetLogger<DynamicsOpportunitiesClient>();
+        protected readonly static new ILogger<OpportunitiesClient> _logger = LoggerManager.GetLogger<OpportunitiesClient>();
 
         private const int DEFAULT_TOP_VALUE = 20;
 
-        public DynamicsOpportunitiesClient() : base()
+        public OpportunitiesClient() : base()
         {
         }
 
@@ -126,16 +126,21 @@ namespace Microsoft.Dynamics.Client
         /// var accountOpportunities = await client.GetOpportunitiesByAccount("account-guid-here", 20, false);
         /// Console.WriteLine(accountOpportunities);
         /// </example>
-        public async Task<OpportunitiesResponseDTO> GetOpportunitiesByAccount(string accountId, int top = DEFAULT_TOP_VALUE, bool includeClosed = false)
+        public async Task<OpportunitiesResponseDTO> GetOpportunitiesByAccount(string accountId, OpportunitiesRequestParameters parameters)
         {
-            _logger.LogDebug("Getting opportunities for account with ID: {AccountId}, top value: {Top}, and includeClosed: {IncludeClosed}", accountId, top, includeClosed);
+            _logger.LogDebug("Getting opportunities for account with ID: {AccountId}, top value: {Top}, and includeClosed: {IncludeClosed}", accountId, parameters.Top, parameters.IncludeClosed);
             await InitializeAuthenticationAsync();
             
-            string filter = includeClosed ? "" : "$filter=statecode eq 0&";
-            var response = await _httpClient.GetAsync($"accounts({accountId})/opportunity_customer_accounts?{filter}$top={top}&$orderby=estimatedclosedate desc");
+            string filter = parameters.IncludeClosed ? "" : "$filter=statecode eq 0&";
+            var response = await _httpClient.GetAsync($"accounts({accountId})/opportunity_customer_accounts?{filter}$top={parameters.Top}&$orderby=estimatedclosedate desc");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<OpportunitiesResponseDTO>(json);
+            var result = JsonSerializer.Deserialize<OpportunitiesResponseDTO>(json);
+            if (result is null)
+            {
+                throw new InvalidOperationException("Failed to deserialize OpportunitiesResponseDTO from response JSON.");
+            }
+            return result;
         }
 
         /// <summary>
@@ -176,65 +181,37 @@ namespace Microsoft.Dynamics.Client
         }
 
         /// <summary>
-        /// Get open opportunities (statecode = 0)
-        /// </summary>
-        /// <param name="top">Maximum number of opportunities to return</param>
-        /// <returns>Formatted JSON string with open opportunities</returns>
-        public async Task<string> GetOpenOpportunities(int top = DEFAULT_TOP_VALUE)
-        {
-            _logger.LogDebug("Getting open opportunities with top value: {Top}", top);
-            await InitializeAuthenticationAsync();
-            var response = await _httpClient.GetAsync($"opportunities?$filter=statecode eq 0&$top={top}");
-            response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            return FormatJson(json);
-        }
-
-        /// <summary>
-        /// Get won opportunities (statecode = 1 and statuscode = 3)
-        /// </summary>
-        /// <param name="top">Maximum number of opportunities to return</param>
-        /// <returns>Formatted JSON string with won opportunities</returns>
-        public async Task<string> GetWonOpportunities(int top = DEFAULT_TOP_VALUE)
-        {
-            _logger.LogDebug("Getting won opportunities with top value: {Top}", top);
-            await InitializeAuthenticationAsync();
-            var response = await _httpClient.GetAsync($"opportunities?$filter=statecode eq 1 and statuscode eq 3&$top={top}");
-            response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            return FormatJson(json);
-        }
-
-        /// <summary>
         /// Search for opportunities by name
         /// </summary>
         /// <param name="searchString">The name or partial name to search for</param>
-        /// <param name="top">Maximum number of opportunities to return</param>
-        /// <param name="useStartsWith">If true, uses 'startswith' filter; otherwise uses 'contains' filter</param>
-        /// <param name="includeClosed">If true, includes closed opportunities; otherwise only open opportunities (statecode = 0)</param>
         /// <returns>OpportunitiesResponseDTO containing the search results</returns>
         /// <example>
         /// // Search for opportunities starting with a name
         /// var opportunities = await client.GetOpportunitiesByName("Microsoft", 10, true, false);
         /// Console.WriteLine(opportunities);
         /// </example>
-        public async Task<OpportunitiesResponseDTO> GetOpportunitiesByName(string searchString, int top = DEFAULT_TOP_VALUE, bool useStartsWith = true, bool includeClosed = false)
+        public async Task<OpportunitiesResponseDTO> GetOpportunitiesByName(string searchString, OpportunitiesRequestParameters parameters)
         {
-            _logger.LogDebug("Getting opportunities by name with search string: {SearchString}, top value: {Top}, useStartsWith: {UseStartsWith}, and includeClosed: {IncludeClosed}", searchString, top, useStartsWith, includeClosed);
+            _logger.LogDebug("Getting opportunities by name with search string: {SearchString}, top value: {Top}, useStartsWith: {UseStartsWith}, and includeClosed: {IncludeClosed}", searchString, parameters.Top, parameters.UseStartsWith, parameters.IncludeClosed);
             await InitializeAuthenticationAsync();
 
-            string nameFilter = useStartsWith 
+            string nameFilter = parameters.UseStartsWith
                 ? $"startswith(name,'{searchString}')" 
                 : $"contains(name,'{searchString}')";
 
-            string filter = includeClosed 
+            string filter = parameters.IncludeClosed 
                 ? nameFilter 
                 : $"{nameFilter} and statecode eq 0";
 
-            var response = await _httpClient.GetAsync($"opportunities?$filter={filter}&$top={top}&$orderby=createdon desc");
+            var response = await _httpClient.GetAsync($"opportunities?$filter={filter}&$top={parameters.Top}&$orderby=createdon desc");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<OpportunitiesResponseDTO>(json);
+            var result = JsonSerializer.Deserialize<OpportunitiesResponseDTO>(json);
+            if (result is null)
+            {
+                throw new InvalidOperationException("Failed to deserialize OpportunitiesResponseDTO from response JSON.");
+            }
+            return result;
         }
     }
 }
