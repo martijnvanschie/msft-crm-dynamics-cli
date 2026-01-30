@@ -1,7 +1,4 @@
-﻿using Microsoft.Dynamics.Client;
-using Microsoft.Dynamics.Core.Logging;
-using Microsoft.Extensions.Logging;
-using Partner.Center.Cli;
+﻿using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -9,7 +6,7 @@ namespace Microsoft.Dynamics.Cli
 {
     internal class MainProcess
     {
-        private static ILogger<MainProcess> _logger;
+        protected readonly ILogger<MainProcess> _logger;
 
         public MainProcess(ILogger<MainProcess> logger)
         {
