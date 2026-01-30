@@ -75,7 +75,7 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
 
                         if (opportunities.Count == 0)
                         {
-                            _logger.LogInformation("No opportunities found matching '{Name}'", settings.Name);
+                            _logger.LogInformation("No opportunities found {searchMode} '{Name}'", searchMode, settings.Name);
                             AnsiConsole.WriteLine();
                             AnsiConsole.MarkupLine($"[yellow]No opportunities found {searchMode} '{settings.Name}'[/]");
                             return;
@@ -83,7 +83,11 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
 
                         if (settings.OutputJson)
                         {
-                            AnsiConsole.WriteLine(JsonSerializer.Serialize(opportunities));
+                            var jsonOptions = new JsonSerializerOptions
+                            {
+                                WriteIndented = true
+                            };
+                            AnsiConsole.WriteLine(JsonSerializer.Serialize(opportunities, jsonOptions));
                         }
                         else
                         {
