@@ -21,3 +21,5 @@ This project is a console application that allows users to query the Microsoft D
 
 - Lists are presented in a tabular format for better readability.
 - Use colors to differentiate between different types of messages (e.g., errors in red, success messages in green).
+- Each command should have a help option that provides information about how to use the command and its parameters.
+- each command should support the output option and support json and table output formats. The default output format should be table.

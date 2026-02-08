@@ -1,10 +1,84 @@
 ﻿using Microsoft.Dynamics.Client.Model;
 using Spectre.Console;
+using Spectre.Console.Json;
 
 namespace Microsoft.Dynamics.Cli.Utils
 {
     internal class SpectreHelper
     {
+        public static void RenderAccountsJson(List<AccountDTO> accounts)
+        {
+            if (accounts.Count == 0)
+            {
+                AnsiConsole.MarkupLine("[yellow]No accounts found[/]");
+                return;
+            }
+            var json = System.Text.Json.JsonSerializer.Serialize(accounts, new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            var jsonText = new JsonText(json)
+                    .MemberColor(Color.Yellow)
+                    .StringColor(Color.White)
+                    .NumberColor(Color.Aqua)
+                    .BooleanColor(Color.Lime);
+
+            AnsiConsole.Write(jsonText);
+        }
+
+        public static void RenderAccountsTable(List<AccountDTO> accounts)
+        {
+            if (accounts.Count == 0)
+            {
+                AnsiConsole.MarkupLine("[yellow]No accounts found[/]");
+                return;
+            }
+            var table = new Table();
+            table.Border(TableBorder.Rounded);
+            table.AddColumn(new TableColumn("[yellow]Account Name[/]").LeftAligned());
+            table.AddColumn(new TableColumn("[yellow]Owner[/]").LeftAligned());
+            table.AddColumn(new TableColumn("[yellow]Territory[/]").LeftAligned());
+            table.AddColumn(new TableColumn("[yellow]Relationship Type[/]").LeftAligned());
+            table.AddColumn(new TableColumn("[yellow]Account ID[/]").LeftAligned());
+
+            foreach (var account in accounts)
+            {
+                table.AddRow(
+                    account.Name ?? "[dim]N/A[/]",
+                    account.OwnerName ?? "[dim]N/A[/]",
+                    account.TerritoryCodeFormattedValue ?? "[dim]N/A[/]",
+                    account.RelationshipTypeFormattedValue ?? "[dim]N/A[/]",
+                    account.AccountId ?? "[dim]N/A[/]"
+                );
+            }
+
+            AnsiConsole.Write(table);
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine($"[dim]Total results: {accounts.Count}[/]");
+        }   
+
+        public static void RenderOpportunitiesJson(List<OpportunityDTO> opportunities)
+        {
+            if (opportunities.Count == 0)
+            {
+                AnsiConsole.MarkupLine("[yellow]No opportunities found[/]");
+                return;
+            }
+            var json = System.Text.Json.JsonSerializer.Serialize(opportunities, new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            var jsonText = new JsonText(json)
+                    .MemberColor(Color.Yellow)
+                    .StringColor(Color.White)
+                    .NumberColor(Color.Aqua)
+                    .BooleanColor(Color.Lime);
+
+            AnsiConsole.Write(jsonText);
+        }
+
         public static void RenderOpportunitiesTable(List<OpportunityDTO> opportunities)
         {
             if (opportunities.Count == 0)

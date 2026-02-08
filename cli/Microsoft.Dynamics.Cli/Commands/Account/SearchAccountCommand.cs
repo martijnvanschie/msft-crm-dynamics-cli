@@ -1,13 +1,9 @@
-﻿using Microsoft.Dynamics.Client;
+﻿using Microsoft.Dynamics.Cli.Utils;
+using Microsoft.Dynamics.Client;
 using Partner.Center.Cli;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Microsoft.Dynamics.Cli.Commands.Account
 {
@@ -33,6 +29,11 @@ namespace Microsoft.Dynamics.Cli.Commands.Account
             [Description("Use 'contains' search instead of 'starts with' (default is starts with)")]
             [DefaultValue(false)]
             public bool UseContains { get; set; } = false;
+
+            [CommandOption("-o|--output <FORMAT>")]
+            [Description("Output format: json or table (default: json)")]
+            [DefaultValue("json")]
+            public string Output { get; set; } = "json";
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
@@ -40,6 +41,13 @@ namespace Microsoft.Dynamics.Cli.Commands.Account
             if (string.IsNullOrWhiteSpace(settings.Name))
             {
                 AnsiConsole.MarkupLine("[red]Error: --name parameter is required[/]");
+                return 1;
+            }
+
+            if (!string.Equals(settings.Output, "json", StringComparison.OrdinalIgnoreCase) && 
+                !string.Equals(settings.Output, "table", StringComparison.OrdinalIgnoreCase))
+            {
+                AnsiConsole.MarkupLine("[red]Error: --output must be either 'json' or 'table'[/]");
                 return 1;
             }
 
@@ -62,28 +70,14 @@ namespace Microsoft.Dynamics.Cli.Commands.Account
                     AnsiConsole.MarkupLine($"[green]Search results for accounts {searchMode} '{settings.Name}':[/]");
                     AnsiConsole.WriteLine();
 
-                    var table = new Table();
-                    table.Border(TableBorder.Rounded);
-                    table.AddColumn(new TableColumn("[yellow]Account Name[/]").LeftAligned());
-                    table.AddColumn(new TableColumn("[yellow]Owner[/]").LeftAligned());
-                    table.AddColumn(new TableColumn("[yellow]Territory[/]").LeftAligned());
-                    table.AddColumn(new TableColumn("[yellow]Relationship Type[/]").LeftAligned());
-                    table.AddColumn(new TableColumn("[yellow]Account ID[/]").LeftAligned());
-
-                    foreach (var account in accounts.Value)
+                    if (string.Equals(settings.Output, "table", StringComparison.OrdinalIgnoreCase))
                     {
-                        table.AddRow(
-                            account.Name ?? "[dim]N/A[/]",
-                            account.OwnerName ?? "[dim]N/A[/]",
-                            account.TerritoryCodeFormattedValue ?? "[dim]N/A[/]",
-                            account.RelationshipTypeFormattedValue ?? "[dim]N/A[/]",
-                            account.AccountId ?? "[dim]N/A[/]"
-                        );
+                        SpectreHelper.RenderAccountsTable(accounts.Value);
                     }
-
-                    AnsiConsole.Write(table);
-                    AnsiConsole.WriteLine();
-                    AnsiConsole.MarkupLine($"[dim]Total results: {accounts.Value.Count}[/]");
+                    else
+                    {
+                        SpectreHelper.RenderAccountsJson(accounts.Value);
+                    }
                 });
 
             return 0;
