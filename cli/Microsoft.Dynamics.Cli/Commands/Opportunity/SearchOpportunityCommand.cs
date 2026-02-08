@@ -1,4 +1,5 @@
 using Microsoft.Dynamics.Client;
+using Microsoft.Dynamics.Cli.Utils;
 using Microsoft.Dynamics.Core.Logging;
 using Microsoft.Extensions.Logging;
 using Partner.Center.Cli;
@@ -101,7 +102,7 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                             AnsiConsole.MarkupLine($"[green]Search results for {opportunityType.ToLower()} {searchMode} '{settings.Name}':[/]");
                             AnsiConsole.WriteLine();
 
-                            OpportunityTableRenderer.RenderOpportunitiesListTable(opportunities);
+                            SpectreHelper.RenderOpportunitiesListTable(opportunities);
 
                             AnsiConsole.WriteLine();
                             AnsiConsole.MarkupLine($"[dim]Total results: {opportunities.Count}[/]");

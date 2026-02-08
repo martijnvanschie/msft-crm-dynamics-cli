@@ -1,9 +1,9 @@
-using Microsoft.Dynamics.Client.Model;
+﻿using Microsoft.Dynamics.Client.Model;
 using Spectre.Console;
 
-namespace Microsoft.Dynamics.Cli.Commands.Opportunity
+namespace Microsoft.Dynamics.Cli.Utils
 {
-    internal static class OpportunityTableRenderer
+    internal class SpectreHelper
     {
         public static void RenderOpportunitiesTable(List<OpportunityDTO> opportunities)
         {
@@ -86,11 +86,12 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                     Markup.Escape(opportunity.StatusCodeFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.ProbabilityFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.OwnerFormattedValue ?? "N/A")
-                    //Markup.Escape(opportunity.EstimatedCloseDate ?? "N/A")
+                //Markup.Escape(opportunity.EstimatedCloseDate ?? "N/A")
                 );
             }
 
             AnsiConsole.Write(table);
         }
+        //JsonText
     }
 }

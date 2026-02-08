@@ -1,4 +1,5 @@
 using Microsoft.Dynamics.Client;
+using Microsoft.Dynamics.Cli.Utils;
 using Partner.Center.Cli;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -82,7 +83,7 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                             AnsiConsole.MarkupLine($"[green]{opportunityType} for account {settings.AccountId}:[/]");
                             AnsiConsole.WriteLine();
                             
-                            OpportunityTableRenderer.RenderOpportunitiesTable(opportunities);
+                            SpectreHelper.RenderOpportunitiesTable(opportunities);
                         }
                     });
 

@@ -1,4 +1,5 @@
 using Microsoft.Dynamics.Client;
+using Microsoft.Dynamics.Cli.Utils;
 using Microsoft.Dynamics.Core.Logging;
 using Microsoft.Extensions.Logging;
 using Partner.Center.Cli;
@@ -148,7 +149,7 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                             AnsiConsole.MarkupLine($"[green]{opportunityType} for account '{Markup.Escape(selectedAccountName ?? "N/A")}':[/]");
                             AnsiConsole.WriteLine();
 
-                            OpportunityTableRenderer.RenderOpportunitiesTable(opportunities);
+                            SpectreHelper.RenderOpportunitiesTable(opportunities);
                         }
                     });
 
