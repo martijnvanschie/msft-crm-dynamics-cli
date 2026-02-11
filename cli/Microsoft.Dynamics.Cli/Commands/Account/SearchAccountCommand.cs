@@ -31,9 +31,9 @@ namespace Microsoft.Dynamics.Cli.Commands.Account
             public bool UseContains { get; set; } = false;
 
             [CommandOption("-o|--output <FORMAT>")]
-            [Description("Output format: json or table (default: json)")]
-            [DefaultValue("json")]
-            public string Output { get; set; } = "json";
+            [Description("Output format: json or table (default: table)")]
+            [DefaultValue("table")]
+            public string Output { get; set; } = "table";
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)

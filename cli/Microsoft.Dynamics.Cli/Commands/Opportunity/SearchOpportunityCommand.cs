@@ -39,10 +39,15 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
             [DefaultValue(false)]
             public bool IncludeClosed { get; set; } = false;
 
-            [CommandOption("-j|--json")]
-            [Description("Output raw JSON response")]
-            [DefaultValue(false)]
-            public bool OutputJson { get; set; } = false;
+            [CommandOption("-o|--output <FORMAT>")]
+            [Description("Output format: json or table (default: table)")]
+            [DefaultValue("table")]
+            public string Output { get; set; } = "table";
+
+            //[CommandOption("-j|--json")]
+            //[Description("Output raw JSON response")]
+            //[DefaultValue(false)]
+            //public bool OutputJson { get; set; } = false;
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
@@ -87,15 +92,8 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                             return;
                         }
 
-                        if (settings.OutputJson)
-                        {
-                            var jsonOptions = new JsonSerializerOptions
-                            {
-                                WriteIndented = true
-                            };
-                            AnsiConsole.WriteLine(JsonSerializer.Serialize(opportunities, jsonOptions));
-                        }
-                        else
+
+                        if (string.Equals(settings.Output, "table", StringComparison.OrdinalIgnoreCase))
                         {
                             AnsiConsole.WriteLine();
                             var opportunityType = settings.IncludeClosed ? "Opportunities" : "Open opportunities";
@@ -106,6 +104,14 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
 
                             AnsiConsole.WriteLine();
                             AnsiConsole.MarkupLine($"[dim]Total results: {opportunities.Count}[/]");
+                        }
+                        else
+                        {
+                            var jsonOptions = new JsonSerializerOptions
+                            {
+                                WriteIndented = true
+                            };
+                            AnsiConsole.WriteLine(JsonSerializer.Serialize(opportunities, jsonOptions));
                         }
                     });
 

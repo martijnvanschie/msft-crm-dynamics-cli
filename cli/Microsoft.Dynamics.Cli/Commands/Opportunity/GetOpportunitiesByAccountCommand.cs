@@ -20,10 +20,10 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
             [Description("The GUID of the account to get opportunities for")]
             public string AccountId { get; set; } = string.Empty;
 
-            [CommandOption("-j|--json")]
-            [Description("Output raw JSON response")]
-            [DefaultValue(false)]
-            public bool OutputJson { get; set; } = false;
+            [CommandOption("-o|--output <FORMAT>")]
+            [Description("Output format: json or table (default: table)")]
+            [DefaultValue("table")]
+            public string Output { get; set; } = "table";
 
             [CommandOption("-c|--include-closed")]
             [Description("Include closed opportunities in the results")]
@@ -68,22 +68,23 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
 
                         var opportunities = result.Value.OrderBy(o => o.StateCode).ThenByDescending(o => o.EstimatedCloseDate).ToList();
 
-                        if (settings.OutputJson)
+
+                        if (string.Equals(settings.Output, "table", StringComparison.OrdinalIgnoreCase))
+                        {
+                            AnsiConsole.WriteLine();
+                            var opportunityType = settings.IncludeClosed ? "Opportunities" : "Open opportunities";
+                            AnsiConsole.MarkupLine($"[green]{opportunityType} for account {settings.AccountId}:[/]");
+                            AnsiConsole.WriteLine();
+
+                            SpectreHelper.RenderOpportunitiesTable(opportunities);
+                        }
+                        else
                         {
                             var jsonOptions = new JsonSerializerOptions
                             {
                                 WriteIndented = true
                             };
                             AnsiConsole.WriteLine(JsonSerializer.Serialize(opportunities, jsonOptions));
-                        }
-                        else
-                        {
-                            AnsiConsole.WriteLine();
-                            var opportunityType = settings.IncludeClosed ? "Opportunities" : "Open opportunities";
-                            AnsiConsole.MarkupLine($"[green]{opportunityType} for account {settings.AccountId}:[/]");
-                            AnsiConsole.WriteLine();
-                            
-                            SpectreHelper.RenderOpportunitiesTable(opportunities);
                         }
                     });
 

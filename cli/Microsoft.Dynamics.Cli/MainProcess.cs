@@ -36,7 +36,8 @@ namespace Microsoft.Dynamics.Cli
                         .WithDescription("Search for accounts by name")
                         .WithExample(new[] { "account", "search", "--name", "Contoso" })
                         .WithExample(new[] { "account", "search", "-n", "Microsoft", "--top", "5" })
-                        .WithExample(new[] { "account", "search", "-n", "Corp", "--contains" });
+                        .WithExample(new[] { "account", "search", "-n", "Corp", "--contains" })
+                        .WithExample(new[] { "account", "search", "-n", "Contoso", "-o", "json" });
                 });
 
                 // Configure opportunity commands
@@ -46,18 +47,21 @@ namespace Microsoft.Dynamics.Cli
                         .WithDescription("Search for opportunities by name")
                         .WithExample(new[] { "opportunity", "search", "--name", "Contoso" })
                         .WithExample(new[] { "opportunity", "search", "-n", "Microsoft", "--top", "5" })
-                        .WithExample(new[] { "opportunity", "search", "-n", "Cloud", "--contains", "--include-closed" });
+                        .WithExample(new[] { "opportunity", "search", "-n", "Cloud", "--contains", "--include-closed" })
+                        .WithExample(new[] { "opportunity", "search", "-n", "Azure", "--output", "json" });
 
                     opportunity.AddCommand<Commands.Opportunity.GetOpportunitiesByAccountCommand>("by-account")
                         .WithDescription("Get all opportunities for a specific account")
                         .WithExample(new[] { "opportunity", "by-account", "12345678-1234-1234-1234-123456789abc" })
-                        .WithExample(new[] { "opportunity", "by-account", "12345678-1234-1234-1234-123456789abc", "--json" });
+                        .WithExample(new[] { "opportunity", "by-account", "12345678-1234-1234-1234-123456789abc", "--include-closed" })
+                        .WithExample(new[] { "opportunity", "by-account", "12345678-1234-1234-1234-123456789abc", "-o", "json" });
 
                     opportunity.AddCommand<Commands.Opportunity.GetOpportunitiesByAccountNameCommand>("by-account-name")
                         .WithDescription("Get opportunities for an account by searching by name")
                         .WithExample(new[] { "opportunity", "by-account-name", "Contoso" })
                         .WithExample(new[] { "opportunity", "by-account-name", "Microsoft", "--include-closed" })
-                        .WithExample(new[] { "opportunity", "by-account-name", "Corp", "--contains" });
+                        .WithExample(new[] { "opportunity", "by-account-name", "Corp", "--contains" })
+                        .WithExample(new[] { "opportunity", "by-account-name", "Azure", "--output", "json" });
                 });
 
                 config.ValidateExamples();
