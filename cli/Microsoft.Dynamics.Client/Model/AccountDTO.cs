@@ -35,5 +35,17 @@ namespace Microsoft.Dynamics.Client.Model
 
         [JsonPropertyName("_mac_relationshiptypeid_value")]
         public Guid? RelationshipTypeId { get; set; }
+
+        [JsonPropertyName("mac_industrytext")]
+        public string? IndustryText { get; set; }
+
+        [JsonPropertyName("mac_industrycategory")]
+        public string? IndustryCategory { get; set; }
+
+        [JsonPropertyName("_mac_industryid_value")]
+        public Guid? IndustryId { get; set; }
+
+        [JsonPropertyName("_mac_industryid_value@OData.Community.Display.V1.FormattedValue")]
+        public string? IndustryFormattedValue { get; set; }
     }
 }
