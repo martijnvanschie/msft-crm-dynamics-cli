@@ -243,6 +243,38 @@ namespace Microsoft.Dynamics.Client
         }
 
         /// <summary>
+        /// Loads service line allocations and assigns them to the given opportunities
+        /// </summary>
+        public async Task LoadAllocationsAsync(IReadOnlyCollection<OpportunityDTO> opportunities)
+        {
+            var ids = opportunities.Where(o => !string.IsNullOrEmpty(o.OpportunityId)).Select(o => o.OpportunityId!).ToList();
+            if (ids.Count == 0)
+            {
+                return;
+            }
+
+            _logger.LogDebug("Getting allocations for {Count} opportunities", ids.Count);
+            await InitializeAuthenticationAsync();
+
+            string filter = string.Join(" or ", ids.Select(id => $"_mac_opportunity_value eq {id}"));
+            var response = await _httpClient.GetAsync($"mac_opportunityallocations?$filter={filter}");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<OpportunityAllocationsResponseDTO>(json)
+                ?? throw new InvalidOperationException("Failed to deserialize allocations from response JSON.");
+
+            var lookup = result.Value.GroupBy(a => a.OpportunityId ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(g => g.Key, g => g.ToList(), StringComparer.OrdinalIgnoreCase);
+
+            foreach (var opportunity in opportunities)
+            {
+                opportunity.Allocations = opportunity.OpportunityId != null && lookup.TryGetValue(opportunity.OpportunityId, out var list)
+                    ? list
+                    : new List<OpportunityAllocationDTO>();
+            }
+        }
+
+        /// <summary>
         /// Get newly created opportunities since a specific date
         /// </summary>
         /// <param name="fromDate">The date to filter opportunities created on or after this date</param>

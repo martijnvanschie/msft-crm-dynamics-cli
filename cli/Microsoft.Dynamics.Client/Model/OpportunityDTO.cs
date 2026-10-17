@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Microsoft.Dynamics.Client.Model
@@ -236,5 +237,11 @@ namespace Microsoft.Dynamics.Client.Model
 
         [JsonPropertyName("traversedpath")]
         public string? TraversedPath { get; set; }
+
+        [JsonPropertyName("allocations")]
+        public List<OpportunityAllocationDTO>? Allocations { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
     }
 }

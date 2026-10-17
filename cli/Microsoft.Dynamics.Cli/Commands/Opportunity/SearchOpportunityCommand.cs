@@ -95,6 +95,8 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                             return;
                         }
 
+                        ctx.Status("Loading allocations...");
+                        await opportunitiesClient.LoadAllocationsAsync(opportunities);
 
                         if (string.Equals(settings.Output, "table", StringComparison.OrdinalIgnoreCase))
                         {
