@@ -43,11 +43,6 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
             [Description("Output format: json or table (default: table)")]
             [DefaultValue("table")]
             public string Output { get; set; } = "table";
-
-            //[CommandOption("-j|--json")]
-            //[Description("Output raw JSON response")]
-            //[DefaultValue(false)]
-            //public bool OutputJson { get; set; } = false;
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)

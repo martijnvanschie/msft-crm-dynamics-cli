@@ -213,5 +213,39 @@ namespace Microsoft.Dynamics.Client
             }
             return result;
         }
+
+        /// <summary>
+        /// Get newly created opportunities since a specific date
+        /// </summary>
+        /// <param name="fromDate">The date to filter opportunities created on or after this date</param>
+        /// <param name="parameters">Request parameters including Top and IncludeClosed</param>
+        /// <returns>OpportunitiesResponseDTO containing newly created opportunities</returns>
+        /// <example>
+        /// // Get opportunities created in the last week
+        /// var newOpportunities = await client.GetNewOpportunities(DateTime.Now.AddDays(-7), new OpportunitiesRequestParameters { Top = 50 });
+        /// Console.WriteLine(newOpportunities);
+        /// </example>
+        public async Task<OpportunitiesResponseDTO> GetNewOpportunities(DateTime fromDate, OpportunitiesRequestParameters parameters)
+        {
+            _logger.LogDebug("Getting new opportunities created since: {FromDate}, top value: {Top}, and includeClosed: {IncludeClosed}", fromDate, parameters.Top, parameters.IncludeClosed);
+            await InitializeAuthenticationAsync();
+
+            string dateFilter = $"createdon ge {fromDate:yyyy-MM-ddTHH:mm:ssZ}";
+
+            string filter = parameters.IncludeClosed 
+                ? dateFilter 
+                : $"{dateFilter} and statecode eq 0";
+
+            var response = await _httpClient.GetAsync($"opportunities?$filter={filter}&$top={parameters.Top}&$orderby=createdon desc");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<OpportunitiesResponseDTO>(json);
+            if (result is null)
+            {
+                throw new InvalidOperationException("Failed to deserialize OpportunitiesResponseDTO from response JSON.");
+            }
+            return result;
+        }
     }
 }
+

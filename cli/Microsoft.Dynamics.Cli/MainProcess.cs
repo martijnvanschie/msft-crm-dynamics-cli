@@ -62,6 +62,13 @@ namespace Microsoft.Dynamics.Cli
                         .WithExample(new[] { "opportunity", "by-account-name", "Microsoft", "--include-closed" })
                         .WithExample(new[] { "opportunity", "by-account-name", "Corp", "--contains" })
                         .WithExample(new[] { "opportunity", "by-account-name", "Azure", "--output", "json" });
+
+                    opportunity.AddCommand<Commands.Opportunity.GetNewOpportunitiesCommand>("new")
+                        .WithDescription("Get newly created opportunities since a specific date")
+                        .WithExample(new[] { "opportunity", "new" })
+                        .WithExample(new[] { "opportunity", "new", "--from", "2024-01-01" })
+                        .WithExample(new[] { "opportunity", "new", "-f", "2024-01-15", "--top", "100" })
+                        .WithExample(new[] { "opportunity", "new", "--from", "2024-01-01", "--include-closed", "-o", "json" });
                 });
 
                 config.ValidateExamples();
