@@ -2,7 +2,7 @@
   "profiles": {
     "Microsoft.Dynamics.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "opportunity new",
+      "commandLineArgs": "opportunity search --number 2024-6596",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

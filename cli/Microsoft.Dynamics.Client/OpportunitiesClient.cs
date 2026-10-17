@@ -215,6 +215,34 @@ namespace Microsoft.Dynamics.Client
         }
 
         /// <summary>
+        /// Search for opportunities by opportunity number
+        /// </summary>
+        public async Task<OpportunitiesResponseDTO> GetOpportunitiesByNumber(string number, OpportunitiesRequestParameters parameters)
+        {
+            _logger.LogDebug("Getting opportunities by number: {Number}, top value: {Top}, useStartsWith: {UseStartsWith}, and includeClosed: {IncludeClosed}", number, parameters.Top, parameters.UseStartsWith, parameters.IncludeClosed);
+            await InitializeAuthenticationAsync();
+
+            string escaped = number.Replace("'", "''");
+            string numberFilter = parameters.UseStartsWith
+                ? $"startswith(mac_opportunitynumber,'{escaped}')"
+                : $"contains(mac_opportunitynumber,'{escaped}')";
+
+            string filter = parameters.IncludeClosed
+                ? numberFilter
+                : $"{numberFilter} and statecode eq 0";
+
+            var response = await _httpClient.GetAsync($"opportunities?$filter={filter}&$top={parameters.Top}&$orderby=createdon desc");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<OpportunitiesResponseDTO>(json);
+            if (result is null)
+            {
+                throw new InvalidOperationException("Failed to deserialize OpportunitiesResponseDTO from response JSON.");
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Get newly created opportunities since a specific date
         /// </summary>
         /// <param name="fromDate">The date to filter opportunities created on or after this date</param>

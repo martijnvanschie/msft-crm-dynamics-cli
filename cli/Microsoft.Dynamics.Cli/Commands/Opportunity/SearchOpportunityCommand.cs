@@ -24,6 +24,10 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
             [Description("The name or partial name of the opportunity to search for")]
             public string? Name { get; set; }
 
+            [CommandOption("--number <NUMBER>")]
+            [Description("The opportunity number (e.g. 2023-3761) to search for")]
+            public string? Number { get; set; }
+
             [CommandOption("-t|--top <COUNT>")]
             [Description("Maximum number of results to return (default: 20)")]
             [DefaultValue(20)]
@@ -47,11 +51,14 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(settings.Name))
+            bool byNumber = !string.IsNullOrWhiteSpace(settings.Number);
+            if (!byNumber && string.IsNullOrWhiteSpace(settings.Name))
             {
-                AnsiConsole.MarkupLine("[red]Error: --name parameter is required[/]");
+                AnsiConsole.MarkupLine("[red]Error: --name or --number parameter is required[/]");
                 return 1;
             }
+
+            string searchTerm = byNumber ? settings.Number! : settings.Name!;
 
             TokenProvider.clientSecret = CliContext.ClientSecret;
             TokenProvider.clientId = CliContext.ClientId;
@@ -63,17 +70,18 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
 
                 await AnsiConsole.Status()
                     .Spinner(Spinner.Known.Dots)
-                    .StartAsync($"Searching for opportunities {searchMode} '{settings.Name}'...", async ctx =>
+                    .StartAsync($"Searching for opportunities {searchMode} '{Markup.Escape(searchTerm)}'...", async ctx =>
                     {
                         OpportunitiesClient opportunitiesClient = new OpportunitiesClient();
-                        var result = await opportunitiesClient.GetOpportunitiesByName(
-                            settings.Name,
-                            new OpportunitiesRequestParameters()
-                            {
-                                Top = settings.Top,
-                                UseStartsWith = !settings.UseContains,
-                                IncludeClosed = settings.IncludeClosed
-                            });
+                        var requestParameters = new OpportunitiesRequestParameters()
+                        {
+                            Top = settings.Top,
+                            UseStartsWith = !settings.UseContains,
+                            IncludeClosed = settings.IncludeClosed
+                        };
+                        var result = byNumber
+                            ? await opportunitiesClient.GetOpportunitiesByNumber(searchTerm, requestParameters)
+                            : await opportunitiesClient.GetOpportunitiesByName(searchTerm, requestParameters);
 
                         ctx.Status("Processing results...");
 
@@ -81,9 +89,9 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
 
                         if (opportunities.Count == 0)
                         {
-                            _logger.LogInformation("No opportunities found {searchMode} '{Name}'", searchMode, settings.Name);
+                            _logger.LogInformation("No opportunities found {searchMode} '{Name}'", searchMode, searchTerm);
                             AnsiConsole.WriteLine();
-                            AnsiConsole.MarkupLine($"[yellow]No opportunities found {searchMode} '{settings.Name}'[/]");
+                            AnsiConsole.MarkupLine($"[yellow]No opportunities found {searchMode} '{Markup.Escape(searchTerm)}'[/]");
                             return;
                         }
 
@@ -92,7 +100,7 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                         {
                             AnsiConsole.WriteLine();
                             var opportunityType = settings.IncludeClosed ? "Opportunities" : "Open opportunities";
-                            AnsiConsole.MarkupLine($"[green]Search results for {opportunityType.ToLower()} {searchMode} '{settings.Name}':[/]");
+                            AnsiConsole.MarkupLine($"[green]Search results for {opportunityType.ToLower()} {searchMode} '{Markup.Escape(searchTerm)}':[/]");
                             AnsiConsole.WriteLine();
 
                             SpectreHelper.RenderOpportunitiesListTable(opportunities);
