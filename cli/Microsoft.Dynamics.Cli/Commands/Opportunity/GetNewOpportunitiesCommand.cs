@@ -97,6 +97,9 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                             return;
                         }
 
+                        ctx.Status("Loading allocations...");
+                        await opportunitiesClient.LoadAllocationsAsync(opportunities);
+
                         if (string.Equals(settings.Output, "table", StringComparison.OrdinalIgnoreCase))
                         {
                             AnsiConsole.WriteLine();
@@ -104,7 +107,7 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                             AnsiConsole.MarkupLine($"[green]{opportunityType} created since {fromDate:yyyy-MM-dd}:[/]");
                             AnsiConsole.WriteLine();
 
-                            SpectreHelper.RenderOpportunitiesListTable(opportunities);
+                            SpectreHelper.RenderOpportunitiesListTable(opportunities, true);
 
                             AnsiConsole.WriteLine();
                             AnsiConsole.MarkupLine($"[dim]Total results: {opportunities.Count}[/]");

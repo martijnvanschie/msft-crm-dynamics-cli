@@ -123,7 +123,7 @@ namespace Microsoft.Dynamics.Cli.Utils
             AnsiConsole.Write(table);
         }
 
-        public static void RenderOpportunitiesListTable(List<OpportunityDTO> opportunities)
+        public static void RenderOpportunitiesListTable(List<OpportunityDTO> opportunities, bool includeAllocations = false)
         {
             if (opportunities.Count == 0)
             {
@@ -142,11 +142,20 @@ namespace Microsoft.Dynamics.Cli.Utils
             table.AddColumn("[yellow]Status[/]");
             table.AddColumn("[yellow]Probability[/]");
             table.AddColumn("[yellow]Owner[/]");
+            table.AddColumn("[yellow]Estimated Value Base[/]");
             //table.AddColumn("[yellow]Estimated Close Date[/]");
+
+            const string optimizedItOperations = "Optimized IT Operations";
+            bool showOptimizedItColumn = includeAllocations && opportunities.Any(o => FindAllocation(o, optimizedItOperations) != null);
+            if (showOptimizedItColumn)
+            {
+                table.AddColumn($"[yellow]{optimizedItOperations}[/]");
+            }
 
             foreach (var opportunity in opportunities)
             {
-                table.AddRow(
+                var cells = new List<string>
+                {
                     //Markup.Escape(opportunity.OpportunityNumber ?? "N/A"),
                     //Markup.Escape(opportunity.AutoNumberOpportunity ?? "N/A"),
                     Markup.Escape(opportunity.ParentAccountIdFormattedValue ?? "N/A"),
@@ -159,12 +168,28 @@ namespace Microsoft.Dynamics.Cli.Utils
                     Markup.Escape(opportunity.StateCodeFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.StatusCodeFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.ProbabilityFormattedValue ?? "N/A"),
-                    Markup.Escape(opportunity.OwnerFormattedValue ?? "N/A")
-                //Markup.Escape(opportunity.EstimatedCloseDate ?? "N/A")
-                );
+                    Markup.Escape(opportunity.OwnerFormattedValue ?? "N/A"),
+                    Markup.Escape(opportunity.EstimatedValueBase?.ToString() ?? "N/A")
+                };
+
+                if (showOptimizedItColumn)
+                {
+                    var allocation = FindAllocation(opportunity, optimizedItOperations);
+                    cells.Add(allocation != null
+                        ? Markup.Escape(allocation.RevenueFormatted ?? allocation.Revenue?.ToString() ?? "N/A")
+                        : "[dim]-[/]");
+                }
+
+                table.AddRow(cells.ToArray());
             }
 
             AnsiConsole.Write(table);
+        }
+
+        private static OpportunityAllocationDTO? FindAllocation(OpportunityDTO opportunity, string serviceLine)
+        {
+            return opportunity.Allocations?.FirstOrDefault(a =>
+                string.Equals(a.ServiceLine, serviceLine, StringComparison.OrdinalIgnoreCase));
         }
         //JsonText
     }

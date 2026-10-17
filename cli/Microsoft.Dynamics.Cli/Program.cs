@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
+Console.OutputEncoding = System.Text.Encoding.UTF8;
+
 if (args.Length > 0 && args[0] == "--debug")
 {
     var processPath = Environment.ProcessPath;

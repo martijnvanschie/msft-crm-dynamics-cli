@@ -105,7 +105,7 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                             AnsiConsole.MarkupLine($"[green]Search results for {opportunityType.ToLower()} {searchMode} '{Markup.Escape(searchTerm)}':[/]");
                             AnsiConsole.WriteLine();
 
-                            SpectreHelper.RenderOpportunitiesListTable(opportunities);
+                            SpectreHelper.RenderOpportunitiesListTable(opportunities, true);
 
                             AnsiConsole.WriteLine();
                             AnsiConsole.MarkupLine($"[dim]Total results: {opportunities.Count}[/]");
