@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -43,6 +43,11 @@ namespace Microsoft.Dynamics.Cli
                 // Configure opportunity commands
                 config.AddBranch("opportunity", opportunity =>
                 {
+                    opportunity.AddCommand<Commands.Opportunity.GetOpportunityCommand>("show")
+                        .WithDescription("Get a specific opportunity by id")
+                        .WithExample(new[] { "opportunity", "show", "--id", "12345678-1234-1234-1234-123456789abc" })
+                        .WithExample(new[] { "opportunity", "show", "--id", "12345678-1234-1234-1234-123456789abc", "-o", "json" });
+
                     opportunity.AddCommand<Commands.Opportunity.SearchOpportunityCommand>("search")
                         .WithDescription("Search for opportunities by name, opportunity number or id")
                         .WithExample(new[] { "opportunity", "search", "--id", "12345678-1234-1234-1234-123456789abc" })
