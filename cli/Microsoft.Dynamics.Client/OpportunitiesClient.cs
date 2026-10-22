@@ -275,6 +275,25 @@ namespace Microsoft.Dynamics.Client
         }
 
         /// <summary>
+        /// Search for an opportunity by its id (state is not filtered)
+        /// </summary>
+        public async Task<OpportunitiesResponseDTO> GetOpportunitiesById(string opportunityId)
+        {
+            _logger.LogDebug("Getting opportunity by id: {OpportunityId}", opportunityId);
+            await InitializeAuthenticationAsync();
+
+            var response = await _httpClient.GetAsync($"opportunities?$filter=opportunityid eq {opportunityId}");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<OpportunitiesResponseDTO>(json);
+            if (result is null)
+            {
+                throw new InvalidOperationException("Failed to deserialize OpportunitiesResponseDTO from response JSON.");
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Get newly created opportunities since a specific date
         /// </summary>
         /// <param name="fromDate">The date to filter opportunities created on or after this date</param>

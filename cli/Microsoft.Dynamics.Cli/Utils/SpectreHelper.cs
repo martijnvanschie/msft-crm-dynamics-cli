@@ -169,7 +169,7 @@ namespace Microsoft.Dynamics.Cli.Utils
                     Markup.Escape(opportunity.StatusCodeFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.ProbabilityFormattedValue ?? "N/A"),
                     Markup.Escape(opportunity.OwnerFormattedValue ?? "N/A"),
-                    Markup.Escape(opportunity.EstimatedValueBase?.ToString() ?? "N/A")
+                    Markup.Escape(opportunity.SumOpportunityAllocationRevenueBaseFormattedValue ?? opportunity.SumOpportunityAllocationRevenueBase?.ToString() ?? "N/A")
                 };
 
                 if (showOptimizedItColumn)

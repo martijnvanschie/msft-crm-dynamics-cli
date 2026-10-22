@@ -44,7 +44,8 @@ namespace Microsoft.Dynamics.Cli
                 config.AddBranch("opportunity", opportunity =>
                 {
                     opportunity.AddCommand<Commands.Opportunity.SearchOpportunityCommand>("search")
-                        .WithDescription("Search for opportunities by name or opportunity number")
+                        .WithDescription("Search for opportunities by name, opportunity number or id")
+                        .WithExample(new[] { "opportunity", "search", "--id", "12345678-1234-1234-1234-123456789abc" })
                         .WithExample(new[] { "opportunity", "search", "--number", "2023-3761" })
                         .WithExample(new[] { "opportunity", "search", "--number", "2023", "--include-closed", "--top", "10" })
                         .WithExample(new[] { "opportunity", "search", "--number", "3761", "--contains", "-o", "json" })

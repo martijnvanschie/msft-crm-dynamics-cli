@@ -28,6 +28,10 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
             [Description("The opportunity number (e.g. 2023-3761) to search for")]
             public string? Number { get; set; }
 
+            [CommandOption("--id <ID>")]
+            [Description("The opportunity id (GUID) to search for")]
+            public string? Id { get; set; }
+
             [CommandOption("-t|--top <COUNT>")]
             [Description("Maximum number of results to return (default: 20)")]
             [DefaultValue(20)]
@@ -51,14 +55,22 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
-            bool byNumber = !string.IsNullOrWhiteSpace(settings.Number);
-            if (!byNumber && string.IsNullOrWhiteSpace(settings.Name))
+            bool byId = !string.IsNullOrWhiteSpace(settings.Id);
+            bool byNumber = !byId && !string.IsNullOrWhiteSpace(settings.Number);
+            if (!byId && !byNumber && string.IsNullOrWhiteSpace(settings.Name))
             {
-                AnsiConsole.MarkupLine("[red]Error: --name or --number parameter is required[/]");
+                AnsiConsole.MarkupLine("[red]Error: --id, --number or --name parameter is required[/]");
                 return 1;
             }
 
-            string searchTerm = byNumber ? settings.Number! : settings.Name!;
+            Guid opportunityId = Guid.Empty;
+            if (byId && !Guid.TryParse(settings.Id, out opportunityId))
+            {
+                AnsiConsole.MarkupLine("[red]Error: --id must be a valid GUID[/]");
+                return 1;
+            }
+
+            string searchTerm = byId ? opportunityId.ToString() : byNumber ? settings.Number! : settings.Name!;
 
             TokenProvider.clientSecret = CliContext.ClientSecret;
             TokenProvider.clientId = CliContext.ClientId;
@@ -66,7 +78,7 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
 
             try
             {
-                string searchMode = settings.UseContains ? "containing" : "starting with";
+                string searchMode = byId ? "with id" : settings.UseContains ? "containing" : "starting with";
 
                 await AnsiConsole.Status()
                     .Spinner(Spinner.Known.Dots)
@@ -79,7 +91,9 @@ namespace Microsoft.Dynamics.Cli.Commands.Opportunity
                             UseStartsWith = !settings.UseContains,
                             IncludeClosed = settings.IncludeClosed
                         };
-                        var result = byNumber
+                        var result = byId
+                            ? await opportunitiesClient.GetOpportunitiesById(searchTerm)
+                            : byNumber
                             ? await opportunitiesClient.GetOpportunitiesByNumber(searchTerm, requestParameters)
                             : await opportunitiesClient.GetOpportunitiesByName(searchTerm, requestParameters);
 

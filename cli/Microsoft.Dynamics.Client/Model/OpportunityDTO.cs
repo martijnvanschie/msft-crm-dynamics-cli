@@ -238,6 +238,12 @@ namespace Microsoft.Dynamics.Client.Model
         [JsonPropertyName("traversedpath")]
         public string? TraversedPath { get; set; }
 
+        [JsonPropertyName("mac_sumopportunityallocationrevenue_base@OData.Community.Display.V1.FormattedValue")]
+        public string? SumOpportunityAllocationRevenueBaseFormattedValue { get; set; }
+
+        [JsonPropertyName("mac_sumopportunityallocationrevenue_base")]
+        public decimal? SumOpportunityAllocationRevenueBase { get; set; }
+
         [JsonPropertyName("allocations")]
         public List<OpportunityAllocationDTO>? Allocations { get; set; }
 
